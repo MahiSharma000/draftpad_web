@@ -1,0 +1,42 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Specific CSS Plugins goes HERE  -->
+{% block css_plugins %}
+
+  <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/js/select.dataTables.min.css">
+
+{% endblock css_plugins %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS Plugins goes HERE  -->
+{% block js_plugins %}
+
+  <script src="{{ config.ASSETS_ROOT }}/vendors/chart.js/Chart.min.js"></script>
+  <script src="{{ config.ASSETS_ROOT }}/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+  <script src="{{ config.ASSETS_ROOT }}/vendors/progressbar.js/progressbar.min.js"></script>
+
+{% endblock js_plugins %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <script src="{{ config.ASSETS_ROOT }}/js/dashboard.js"></script>
+  <script src="{{ config.ASSETS_ROOT }}/js/Chart.roundedBarCharts.js"></script>
+
+{% endblock javascripts %}
