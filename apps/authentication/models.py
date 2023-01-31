@@ -284,7 +284,6 @@ class Subscriptions(db.Model):
     amount = db.Column(db.Integer, default=200)
     duration = db.Column(db.Integer, default=30)
     transaction_id = db.Column(db.String(64))
-    is_complete = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
 
@@ -366,4 +365,5 @@ class Follower(db.Model):
         
     def __repr__(self):
         return str(self.user_id)
+
 
