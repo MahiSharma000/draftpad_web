@@ -3,7 +3,7 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
-from flask import render_template, redirect, request, url_for
+from flask import render_template, redirect, request, url_for, jsonify
 from flask_login import (
     current_user,
     login_user,
@@ -13,7 +13,7 @@ from flask_login import (
 from apps import db, login_manager
 from apps.authentication import blueprint
 from apps.authentication.forms import LoginForm, CreateAccountForm
-from apps.authentication.models import Users
+from apps.authentication.models import *
 
 from apps.authentication.util import verify_pass
 
@@ -119,3 +119,67 @@ def not_found_error(error):
 @blueprint.errorhandler(500)
 def internal_error(error):
     return render_template('home/page-500.html'), 500
+
+
+# REST API code for Android App
+
+@blueprint.route('/api/v1/login', methods=['POST'])
+def api_login():
+    username = request.form['username']
+    password = request.form['password']
+    # Locate user
+    user = Users.query.filter_by(username=username).first()
+    # Check the password
+    if user and verify_pass(password, user.password):
+        return jsonify({'status': 'OK', 'user': user.username, 'email': user.email, 'id': user.id})
+    return jsonify({'status': 'ERROR', 'user': '', 'email': '', 'id': ''})
+
+@blueprint.route('/api/v1/register', methods=['POST'])
+def api_register():
+    username = request.form['username']
+    email = request.form['email']
+    # Check usename exists
+    user = Users.query.filter_by(username=username).first()
+    if user:
+        return jsonify({'status': 'ERROR', 'msg': 'Username already registered'})
+    # Check email exists
+    user = Users.query.filter_by(email=email).first()
+    if user:
+        return jsonify({'status': 'ERROR', 'msg': 'Email already registered'})
+    # else we can create the user
+    user = Users(**request.form)
+    db.session.add(user)
+    db.session.commit()
+    return jsonify({'status': 'OK', 'msg': 'User created please login'})
+
+@blueprint.route('/api/v1/logout', methods=['POST'])
+def api_logout():
+    return jsonify({'status': 'OK'})
+
+@blueprint.route('/api/v1/user', methods=['GET'])
+def api_user():
+    if current_user.is_authenticated:
+        return jsonify({'status': 'OK', 'user': current_user.username, 'email': current_user.email, 'id': current_user.id})
+    return jsonify({'status': 'ERROR', 'user': '', 'email': '', 'id': ''})
+
+@blueprint.route('/api/v1/profile/<int:user_id>', methods=['GET'])
+def api_profile(user_id):
+    if current_user.is_authenticated:
+        profile = Profile.query.filter_by(user_id=user_id).first()
+        if profile:
+            return jsonify({'status': 'OK', 'profile': profile.to_json()})
+        return jsonify({'status': 'ERROR', 'profile': ''})
+    return jsonify({'status': 'ERROR', 'profile': ''})
+
+@blueprint.route('/api/v1/profile', methods=['POST'])
+def api_profile_update():
+    if current_user.is_authenticated:
+        profile = Profile.query.filter_by(user_id=current_user.id).first()
+        if profile:
+            profile.update(**request.form)
+            db.session.commit()
+            return jsonify({'status': 'OK', 'profile': profile.to_json()})
+        return jsonify({'status': 'ERROR', 'profile': ''})
+    return jsonify({'status': 'ERROR', 'profile': ''})
+
+

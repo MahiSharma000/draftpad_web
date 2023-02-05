@@ -42,3 +42,4 @@ def create_app(config):
     register_blueprints(app)
     configure_database(app)
     return app
+

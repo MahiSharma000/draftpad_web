@@ -1,3 +1,4 @@
+from email.mime import image
 from flask_login import UserMixin
 from apps import db, login_manager
 
@@ -284,7 +285,6 @@ class Subscriptions(db.Model):
     amount = db.Column(db.Integer, default=200)
     duration = db.Column(db.Integer, default=30)
     transaction_id = db.Column(db.String(64))
-    is_complete = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
 
@@ -367,3 +367,32 @@ class Follower(db.Model):
     def __repr__(self):
         return str(self.user_id)
 
+
+class Report(db.Model):
+    __tablename__ = 'Reports'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
+    book_id = db.Column(db.Integer, db.ForeignKey('Books.id'))
+    chapter_id = db.Column(db.Integer, db.ForeignKey('Chapter.id'))
+    comment_id = db.Column(db.Integer, db.ForeignKey('Comments.id'))
+    report_type = db.Column(db.String(64))
+    report_reason = db.Column(db.String(64))
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+
+    #def save(self):
+     # db.session.add(self)image.png
+      #  db.session.commit()
+       # print('Report saved')
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+        print('Report deleted')
+
+    def update(self):
+        db.session.commit()
+        print('Report updated')
+
+    def __repr__(self):
+        return str(self.user_id)
