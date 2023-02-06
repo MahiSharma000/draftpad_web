@@ -7,6 +7,7 @@ from apps.home import blueprint
 from flask import render_template, request
 from flask_login import login_required
 from jinja2 import TemplateNotFound
+from apps.authentication.models import *
 
 
 @blueprint.route('/index')
@@ -52,3 +53,10 @@ def get_segment(request):
 
     except:
         return None
+
+
+@blueprint.route('/admin/dashboard')
+def admin_dashboard():
+    #load all user's data
+    users = Users.query.all()    
+    return render_template('admin/dashboard.html', users=users)

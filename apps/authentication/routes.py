@@ -156,10 +156,11 @@ def api_register():
 def api_logout():
     return jsonify({'status': 'OK'})
 
-@blueprint.route('/api/v1/user', methods=['GET'])
-def api_user():
-    if current_user.is_authenticated:
-        return jsonify({'status': 'OK', 'user': current_user.username, 'email': current_user.email, 'id': current_user.id})
+@blueprint.route('/api/v1/user/<int:user_id>', methods=['GET'])
+def api_user(user_id):
+    user = Users.query.filter_by(id=user_id).first()
+    if user:    
+        return jsonify({'status': 'OK', 'user': user.username, 'email': user.email, 'id': user.id})
     return jsonify({'status': 'ERROR', 'user': '', 'email': '', 'id': ''})
 
 @blueprint.route('/api/v1/profile/<int:user_id>', methods=['GET'])
@@ -171,15 +172,13 @@ def api_profile(user_id):
         return jsonify({'status': 'ERROR', 'profile': ''})
     return jsonify({'status': 'ERROR', 'profile': ''})
 
-@blueprint.route('/api/v1/profile', methods=['POST'])
-def api_profile_update():
-    if current_user.is_authenticated:
-        profile = Profile.query.filter_by(user_id=current_user.id).first()
-        if profile:
-            profile.update(**request.form)
-            db.session.commit()
-            return jsonify({'status': 'OK', 'profile': profile.to_json()})
-        return jsonify({'status': 'ERROR', 'profile': ''})
+@blueprint.route('/api/v1/profile/<int:user_id>', methods=['POST'])
+def api_profile_update(user_id):
+    profile = Profile.query.filter_by(user_id=user_id).first()
+    if profile:
+        profile.update(**request.form)
+        db.session.commit()
+        return jsonify({'status': 'OK', 'profile': profile.to_json()})
     return jsonify({'status': 'ERROR', 'profile': ''})
 
 
