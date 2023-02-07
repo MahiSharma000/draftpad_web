@@ -59,4 +59,7 @@ def get_segment(request):
 def admin_dashboard():
     #load all user's data
     users = Users.query.all()    
-    return render_template('admin/dashboard.html', users=users)
+    book = Book.query.all()
+    return render_template('admin/dashboard.html', users=users) 
+
+
