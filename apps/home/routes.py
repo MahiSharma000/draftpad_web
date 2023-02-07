@@ -57,7 +57,7 @@ def get_segment(request):
 
 @blueprint.route('/admin/dashboard')
 def admin_dashboard():
-    #load all user's data
+    
     users = Users.query.all()    
     books = Book.query.all() 
     categories = Category.query.all()
