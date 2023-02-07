@@ -60,7 +60,10 @@ def admin_dashboard():
     #load all user's data
     users = Users.query.all()    
     books = Book.query.all() 
-    return render_template('admin/dashboard.html', users=users, books=books)
+    categories = Category.query.all()
+    Comments = Comment.query.all()
+    Reports = Report.query.all()
+    return render_template('admin/dashboard.html', users=users, books=books, categories=categories,Comments=Comments,Reports=Reports)
     
 
 
