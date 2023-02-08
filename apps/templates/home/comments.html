@@ -1,0 +1,113 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Basic Table {% endblock %} 
+
+<!-- Specific CSS Plugins goes HERE  -->
+{% block css_plugins %}{% endblock css_plugins %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} 
+
+ <!--Comments-->
+<div class="row">
+  <div class="col-lg-8 d-flex flex-column">
+    
+    
+    <div class="row flex-grow">
+      <div class="col-12 grid-margin stretch-card">
+        <div class="card card-rounded">
+          <div class="card-body">
+            <div class="d-sm-flex justify-content-between align-items-start">
+              <div>
+                <h4 class="card-title card-title-dash">Comments</h4>
+                <p class="card-subtitle card-subtitle-dash">You have {{Comments|length}} comments</p>
+              </div>
+              <div>
+                <!-- <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-account-plus"></i>Add new member</button> -->
+              </div>
+            </div>
+            <div class="table-responsive  mt-1">
+              <table class="table select-table">
+                <thead>
+                  <tr>
+                    <th>
+                      <div class="form-check form-check-flat mt-0">
+                        <label class="form-check-label">
+                          <input type="checkbox" class="form-check-input" aria-checked="false"><i class="input-helper"></i></label>
+                      </div>
+                    </th>
+                    <th>Comment</th>
+                    <th>Chapter</th>
+                    <th>User</th>
+                    <th>Commented On</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for comment in comments %}
+                  <tr>
+                    <td>
+                      <div class="form-check form-check-flat mt-0">
+                        <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" aria-checked="false"><i class="input-helper"></i></label>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex ">
+                        <img src="https://th.bing.com/th/id/OIP.TctatNGs7RN-Dfc3NZf91AAAAA?pid=ImgDet&rs=1" alt="">
+                        <div>
+                          <h6>{{comment.comment}}</h6>
+                          <p>username</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <h6>{{comment.chapter}}</h6>
+                      <p>registered</p>
+                    </td>
+                    <td>
+                      <h6>{{comment.user}}</h6>
+                      <p>registered</p>
+                    </td>
+                    <td>
+                      <h6>{{comment.created_on}}</h6>
+                      <p>registered</p>
+                    </td>
+                    <td>
+                      <div class="d-flex">
+                        <a href="{{config.APP_ROOT}}/admin/comments/{{comment.id}}/edit" class="btn btn-primary btn-sm text-white">Edit</a>
+                        <form action="{{config.APP_ROOT}}/admin/comments/{{comment.id}}/delete" method="post">
+                          <button type="submit" class="btn btn-danger btn-sm text-white">Delete</button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                 {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      
+  </div>
+  
+</div>
+
+  
+
+{% endblock content %}
+
+<!-- Specific JS Plugins goes HERE  -->
+{% block js_plugins %}
+
+  <script src="{{ config.ASSETS_ROOT }}/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+
+{% endblock js_plugins %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
