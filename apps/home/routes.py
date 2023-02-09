@@ -64,6 +64,12 @@ def admin_dashboard():
     Reports = Report.query.all()
     return render_template('admin/dashboard.html', users=users, books=books, categories=categories,Comments=Comments,Reports=Reports)
     
+@blueprint.route('/home/userDetails')
+def admin_userDetails():
+    users = Users.query.all()
+    return render_template('admin/userDetails.html', users=users)
+
+
 
 
 
