@@ -1,0 +1,549 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Specific CSS Plugins goes HERE  -->
+{% block css_plugins %}
+
+  <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/js/select.dataTables.min.css">
+
+{% endblock css_plugins %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="content-wrapper">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="home-tab">
+          <div class="d-sm-flex align-items-center justify-content-between border-bottom">
+            <ul class="nav nav-tabs" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#audiences" role="tab" aria-selected="false">Audiences</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#demographics" role="tab" aria-selected="false">Demographics</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link border-0" id="more-tab" data-bs-toggle="tab" href="#more" role="tab" aria-selected="false">More</a>
+              </li>
+            </ul>
+            <div>
+              <div class="btn-wrapper">
+                <a href="#" class="btn btn-otline-dark align-items-center"><i class="icon-share"></i> Share</a>
+                <a href="#" class="btn btn-otline-dark"><i class="icon-printer"></i> Print</a>
+                <a href="#" class="btn btn-primary text-white me-0"><i class="icon-download"></i> Export</a>
+              </div>
+            </div>
+          </div>
+          <div class="tab-content tab-content-basic">
+            <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview"> 
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="statistics-details d-flex align-items-center justify-content-between">
+                    <div>
+                      <p class="statistics-title">Bounce Rate</p>
+                      <h3 class="rate-percentage">32.53%</h3>
+                      <p class="text-danger d-flex"><i class="mdi mdi-menu-down"></i><span>-0.5%</span></p>
+                    </div>
+                    <div>
+                      <p class="statistics-title">Page Views</p>
+                      <h3 class="rate-percentage">7,682</h3>
+                      <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i><span>+0.1%</span></p>
+                    </div>
+                    <div>
+                      <p class="statistics-title">New Sessions</p>
+                      <h3 class="rate-percentage">68.8</h3>
+                      <p class="text-danger d-flex"><i class="mdi mdi-menu-down"></i><span>68.8</span></p>
+                    </div>
+                    <div class="d-none d-md-block">
+                      <p class="statistics-title">Avg. Time on Site</p>
+                      <h3 class="rate-percentage">2m:35s</h3>
+                      <p class="text-success d-flex"><i class="mdi mdi-menu-down"></i><span>+0.8%</span></p>
+                    </div>
+                    <div class="d-none d-md-block">
+                      <p class="statistics-title">New Sessions</p>
+                      <h3 class="rate-percentage">68.8</h3>
+                      <p class="text-danger d-flex"><i class="mdi mdi-menu-down"></i><span>68.8</span></p>
+                    </div>
+                    <div class="d-none d-md-block">
+                      <p class="statistics-title">Avg. Time on Site</p>
+                      <h3 class="rate-percentage">2m:35s</h3>
+                      <p class="text-success d-flex"><i class="mdi mdi-menu-down"></i><span>+0.8%</span></p>
+                    </div>
+                  </div>
+                </div>
+              </div> 
+               <!-- USERS  -->
+              <div class="row">
+                <div class="col-lg-8 d-flex flex-column">
+                  
+                  
+                  <div class="row flex-grow">
+                    <div class="col-12 grid-margin stretch-card">
+                      <div class="card card-rounded">
+                        <div class="card-body">
+                          <div class="d-sm-flex justify-content-between align-items-start">
+                            <div>
+                              <h4 class="card-title card-title-dash">Registered Users</h4>
+                              <p class="card-subtitle card-subtitle-dash">You have {{users|length}} registered users</p>
+                            </div>
+                            <div>
+                              <!-- <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-account-plus"></i>Add new member</button> -->
+                            </div>
+                          </div>
+                          <div class="table-responsive  mt-1">
+                            <table class="table select-table">
+                              <thead>
+                                <tr>
+                                  <th>
+                                    <div class="form-check form-check-flat mt-0">
+                                      <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" aria-checked="false"><i class="input-helper"></i></label>
+                                    </div>
+                                  </th>
+                                  <th>Customer</th>
+                                  <th>Email</th>
+                                  <th>Password</th>
+                                  <th>Last Visited</th>
+                                  <th>Actions</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {% for user in users %}
+                                <tr>
+                                  <td>
+                                    <div class="form-check form-check-flat mt-0">
+                                      <label class="form-check-label">
+                                      <input type="checkbox" class="form-check-input" aria-checked="true"><i class="input-helper"></i></label>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div class="d-flex ">
+                                      <img src="https://th.bing.com/th/id/OIP.TctatNGs7RN-Dfc3NZf91AAAAA?pid=ImgDet&rs=1" alt="">
+                                      <div>
+                                        <h6>{{user.username}}</h6>
+                                        <p>username</p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <h6>{{user.email}}</h6>
+                                    <p>registered</p>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      l*****   
+                                    </div>
+                                  </td>
+                                  <td><div class="badge badge-opacity-warning">{{user.last_seen.date()}}</div></td>
+                                  <td>
+                                    <div class="d-flex">
+                                      <a href="/admin/users/{{user.id}}/edit" class="btn btn-primary btn-sm text-white me-1">Edit</a>
+                                      <form action="/admin/users/{{user.id}}/delete" method="POST">
+                                        <button type="submit" class="btn btn-danger btn-sm text-white">Delete</button>
+                                      </form>
+                                    </div>
+                                  </td>
+                                </tr>
+                               {% endfor %}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                    
+                </div>
+                
+              </div>
+              <!-- CATEGORIES  -->
+              <div class="row">
+                <div class="col-lg-8 d-flex flex-column">
+                  
+                  
+                  <div class="row flex-grow">
+                    <div class="col-12 grid-margin stretch-card">
+                      <div class="card card-rounded">
+                        <div class="card-body">
+                          <div class="d-sm-flex justify-content-between align-items-start">
+                            <div>
+                              <h4 class="card-title card-title-dash">Book Categories</h4>
+                            </div>
+                            <div>
+                              <!-- <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-account-plus"></i>Add new member</button> -->
+                            </div>
+                          </div>
+                          <div class="table-responsive  mt-1">
+                            <table class="table select-table">
+                              <thead>
+                                <tr>
+                                  <th>
+                                    <div class="form-check form-check-flat mt-0">
+                                      <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" aria-checked="false"><i class="input-helper"></i></label>
+                                    </div>
+                                  </th>
+                                  <th>#</th>
+                                  <th>Category name</th>
+                                  <th>Actions</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {% for category in categories %}
+                                <tr>
+                                  <td>
+                                    <div class="form-check form-check-flat mt-0">
+                                      <label class="form-check-label">
+                                      <input type="checkbox" class="form-check-input" aria-checked="false"><i class="input-helper"></i></label>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div class="d-flex ">
+                                      <img src="https://th.bing.com/th/id/OIP.TctatNGs7RN-Dfc3NZf91AAAAA?pid=ImgDet&rs=1" alt="">
+                                      <div>
+                                        <h6>{{category.id}}</h6>
+                                        <p>ID</p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <h6>{{category.name}}</h6>
+                                    <p>tag</p>
+                                  </td>
+                                  <td>
+                                    <div class="d-flex">
+                                      <a href="/admin/categories/{{category.id}}/edit" class="btn btn-primary btn-sm text-white me-1">Edit</a>
+                                      <form action="/admin/categories/{{category.id}}/delete" method="POST">
+                                        <button type="submit" class="btn btn-danger btn-sm text-white">Delete</button>
+                                      </form>
+                                    </div>
+                                  </tr>
+                               {% endfor %}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                    
+                </div>
+                
+              </div>
+              <!-- BOOKS -->
+              <div class="row">
+                <div class="col-lg-8 d-flex flex-column">
+                  
+                  
+                  <div class="row flex-grow">
+                    <div class="col-12 grid-margin stretch-card">
+                      <div class="card card-rounded">
+                        <div class="card-body">
+                          <div class="d-sm-flex justify-content-between align-items-start">
+                            <div>
+                              <h4 class="card-title card-title-dash">Books By Users</h4>
+                              <p class="card-subtitle card-subtitle-dash">You have {{books|length}} books by users</p>
+                            </div>
+                            <div>
+                              <!-- <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-account-plus"></i>Add new member</button> -->
+                            </div>
+                          </div>
+                          <div class="table-responsive  mt-1">
+                            <table class="table select-table">
+                              <thead>
+                                <tr>
+                                  <th>
+                                    <div class="form-check form-check-flat mt-0">
+                                      <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" aria-checked="false"><i class="input-helper"></i></label>
+                                    </div>
+                                  </th>
+                                  <th>Title</th>
+                                  <th>Category</th>
+                                  <th>User Name</th>
+                                  <th>Status</th>
+                                  <th>Created On</th>
+                                  <th>Views</th>
+                                  <th>Lang</th>
+                                  <th>Actions</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {% for book in books %}
+                                <tr>
+                                  <td>
+                                    <div class="form-check form-check-flat mt-0">
+                                      <label class="form-check-label">
+                                      <input type="checkbox" class="form-check-input" aria-checked="false"><i class="input-helper"></i></label>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div class="d-flex ">
+                                      <img src="https://th.bing.com/th/id/OIP.TctatNGs7RN-Dfc3NZf91AAAAA?pid=ImgDet&rs=1" alt="">
+                                      <div>
+                                        <h6>{{book.title}}</h6>
+                                        <p>username</p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <h6>{{book.category}}</h6>
+                                    <p>registered</p>
+                                  </td>
+                                  <td>
+                                    <h6>{{book.user}}</h6>
+                                    <p>registered</p>
+                                  </td>
+                                  <td>
+                                    <h6>{{book.status}}</h6>
+                                    <p>registered</p>
+                                  </td>
+                                  <td>
+                                    <h6>{{book.created_on}}</h6>
+                                    <p>registered</p>
+                                  </td>
+                                  <td>
+                                    <h6>{{book.views}}</h6>
+                                    <p>registered</p>
+                                  </td>
+                                  <td>
+                                    <h6>{{book.lang}}</h6>
+                                    <p>registered</p>
+                                  </td>
+                                  <td>
+                                    <div class="d-flex">
+                                      <a href="/admin/books/{{book.id}}/edit" class="btn btn-primary btn-sm text-white me-1">Edit</a>
+                                      <form action="/admin/books/{{book.id}}/delete" method="POST">
+                                        <button type="submit" class="btn btn-danger btn-sm text-white">Delete</button>
+                                      </form>
+                                    </div>
+                                  </td>
+                                  
+                                </tr>
+                               {% endfor %}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                    
+                </div>
+                
+              </div>
+              <!--Comments-->
+              <div class="row">
+                <div class="col-lg-8 d-flex flex-column">
+                  
+                  
+                  <div class="row flex-grow">
+                    <div class="col-12 grid-margin stretch-card">
+                      <div class="card card-rounded">
+                        <div class="card-body">
+                          <div class="d-sm-flex justify-content-between align-items-start">
+                            <div>
+                              <h4 class="card-title card-title-dash">Comments</h4>
+                              <p class="card-subtitle card-subtitle-dash">You have {{Comments|length}} comments</p>
+                            </div>
+                            <div>
+                              <!-- <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-account-plus"></i>Add new member</button> -->
+                            </div>
+                          </div>
+                          <div class="table-responsive  mt-1">
+                            <table class="table select-table">
+                              <thead>
+                                <tr>
+                                  <th>
+                                    <div class="form-check form-check-flat mt-0">
+                                      <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" aria-checked="false"><i class="input-helper"></i></label>
+                                    </div>
+                                  </th>
+                                  <th>Comment</th>
+                                  <th>Chapter</th>
+                                  <th>User</th>
+                                  <th>Commented On</th>
+                                  <th>Actions</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {% for comment in comments %}
+                                <tr>
+                                  <td>
+                                    <div class="form-check form-check-flat mt-0">
+                                      <label class="form-check-label">
+                                      <input type="checkbox" class="form-check-input" aria-checked="false"><i class="input-helper"></i></label>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div class="d-flex ">
+                                      <img src="https://th.bing.com/th/id/OIP.TctatNGs7RN-Dfc3NZf91AAAAA?pid=ImgDet&rs=1" alt="">
+                                      <div>
+                                        <h6>{{comment.comment}}</h6>
+                                        <p>username</p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <h6>{{comment.chapter}}</h6>
+                                    <p>registered</p>
+                                  </td>
+                                  <td>
+                                    <h6>{{comment.user}}</h6>
+                                    <p>registered</p>
+                                  </td>
+                                  <td>
+                                    <h6>{{comment.created_on}}</h6>
+                                    <p>registered</p>
+                                  </td>
+                                  <td><div class="badge badge-opacity-warning">{{user.last_seen.date()}}</div></td>
+                                  <td>
+                                    <div class="d-flex">
+                                      <a href="/admin/comments/{{comment.id}}/edit" class="btn btn-primary btn-sm text-white me-1">Edit</a>
+                                      <form action="/admin/comments/{{comment.id}}/delete" method="POST">
+                                        <button type="submit" class="btn btn-danger btn-sm text-white">Delete</button>
+                                      </form>
+                                    </div>
+                                  </td>
+                                </tr>
+                               {% endfor %}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                    
+                </div>
+                
+              </div>
+              <!--Reports-->
+              <div class="row">
+                <div class="col-lg-8 d-flex flex-column">
+                  
+                  
+                  <div class="row flex-grow">
+                    <div class="col-12 grid-margin stretch-card">
+                      <div class="card card-rounded">
+                        <div class="card-body">
+                          <div class="d-sm-flex justify-content-between align-items-start">
+                            <div>
+                              <h4 class="card-title card-title-dash">Reported Users</h4>
+                              <p class="card-subtitle card-subtitle-dash">You have {{users|length}} registered users</p>
+                            </div>
+                            <div>
+                              <!-- <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-account-plus"></i>Add new member</button> -->
+                            </div>
+                          </div>
+                          <div class="table-responsive  mt-1">
+                            <table class="table select-table">
+                              <thead>
+                                <tr>
+                                  <th>
+                                    <div class="form-check form-check-flat mt-0">
+                                      <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" aria-checked="false"><i class="input-helper"></i></label>
+                                    </div>
+                                  </th>
+                                  <th>User</th>
+                                  <th>Chapter</th>
+                                  <th>Book</th>
+                                  <th>Report Type</th>
+                                  <th>Reason for Report</th>
+                                  <th>Reported On</th>
+                                  <th>Actions</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {% for report in reports %}
+                                <tr>
+                                  <td>
+                                    <div class="form-check form-check-flat mt-0">
+                                      <label class="form-check-label">
+                                      <input type="checkbox" class="form-check-input" aria-checked="false"><i class="input-helper"></i></label>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div class="d-flex ">
+                                      <img src="https://th.bing.com/th/id/OIP.TctatNGs7RN-Dfc3NZf91AAAAA?pid=ImgDet&rs=1" alt="">
+                                      <div>
+                                        <h6>{{report.user}}</h6>
+                                      </div>
+
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <h6>{{report.chapter}}</h6>
+                                  </td>
+                                  <td>
+                                    <h6>{{report.book}}</h6>
+                                  </td>
+                                  <td>
+                                    <h6>{{report.report_type}}</h6>
+                                  </td>
+                                  <td>
+                                    <h6>{{report.reason}}</h6>
+                                  </td>
+                                  <td>
+                                    <h6>{{report.created_on}}</h6>
+                                  </td>
+                                  <td>
+                                    <div class="d-flex">
+                                      <a href="/admin/reports/{{report.id}}/edit" class="btn btn-primary btn-sm text-white me-1">Edit</a>
+                                      <form action="/admin/reports/{{report.id}}/delete" method="POST">
+                                        <button type="submit" class="btn btn-danger btn-sm text-white">Delete</button>
+                                      </form>
+                                    </div>
+                                  </td>
+                                </tr>
+                               {% endfor %}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                    
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+<!-- Specific JS Plugins goes HERE  -->
+{% block js_plugins %}
+
+  <script src="{{ config.ASSETS_ROOT }}/vendors/chart.js/Chart.min.js"></script>
+  <script src="{{ config.ASSETS_ROOT }}/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+  <script src="{{ config.ASSETS_ROOT }}/vendors/progressbar.js/progressbar.min.js"></script>
+
+{% endblock js_plugins %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <script src="{{ config.ASSETS_ROOT }}/js/dashboard.js"></script>
+  <script src="{{ config.ASSETS_ROOT }}/js/Chart.roundedBarCharts.js"></script>
+
+{% endblock javascripts %}

@@ -14,7 +14,6 @@ from apps import db, login_manager
 from apps.authentication import blueprint
 from apps.authentication.forms import LoginForm, CreateAccountForm
 from apps.authentication.models import *
-
 from apps.authentication.util import verify_pass
 
 
@@ -181,4 +180,18 @@ def api_profile_update(user_id):
         return jsonify({'status': 'OK', 'profile': profile.to_json()})
     return jsonify({'status': 'ERROR', 'profile': ''})
 
+@blueprint.route('/api/v1/category', methods=['GET'])
+def api_category(user_id):
+    if current_user.is_authenticated:
+        categories = Category.query.filter_by(user_id=user_id).all()
+        if categories:
+            return jsonify({'status': 'OK', 'categories': [category.to_json() for category in categories]})
+        return jsonify({'status': 'ERROR', 'categories': ''})
+    return jsonify({'status': 'ERROR', 'categories': ''})
 
+@blueprint.route('/api/v1/category', methods=['POST'])
+def api_category_add():
+    category = Category(**request.form)
+    db.session.add(category)
+    db.session.commit()
+    return jsonify({'status': 'success'})
