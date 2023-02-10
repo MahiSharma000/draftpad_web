@@ -4,7 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from apps.home import blueprint
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect, url_for
 from flask_login import login_required
 from jinja2 import TemplateNotFound
 from apps.authentication.models import *
@@ -64,6 +64,57 @@ def admin_dashboard():
     Reports = Report.query.all()
     return render_template('admin/dashboard.html', users=users, books=books, categories=categories,Comments=Comments,Reports=Reports)
     
+@blueprint.route('/admin/users')
+def admin_users():
+    users = Users.query.all()
+    return render_template('home/userDetails.html', users=users)
+
+@blueprint.route('/admin/user/<int:id>')
+def userDetails(id):
+    user = Users.query.get(id)
+    return render_template('home/userDetails_id.html', user=user)
+
+@blueprint.route('/admin/categories')
+def admin_categories():
+    categories = Category.query.all()
+    return render_template('home/categories.html', categories=categories)
+
+@blueprint.route('/admin/category/<int:id>')
+def categories(id):    
+    category = Category.query.get(id)
+    return render_template('home/categories_id.html', category=category)
+
+@blueprint.route('/admin/books')
+def admin_books():
+    books = Book.query.all()
+    return render_template('home/bookDetails.html', books=books)
+
+@blueprint.route('/admin/book/<int:id>')
+def bookDetails(id):
+    book = Book.query.get(id)
+    return render_template('home/bookDetails_id.html', book=book)
+
+@blueprint.route('/admin/comments')
+def admin_comments():
+    comments = Comment.query.all()
+    return render_template('home/comments.html', comments=comments)
+
+@blueprint.route('/admin/comment/<int:id>')
+def commentDetails(id):
+    comment = Comment.query.get(id)
+    return render_template('home/comments_id.html', comment=comment)
+
+@blueprint.route('/admin/reports')
+def admin_reports():
+    reports = Report.query.all()
+    return render_template('home/report.html', reports=reports)
+
+@blueprint.route('/admin/report/<int:id>')
+def reportDetails(id):
+    report = Report.query.get(id)
+    return render_template('home/report_id.html', report=report)
+
+
 
 
 

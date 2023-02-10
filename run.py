@@ -26,6 +26,7 @@ if DEBUG:
 
 if __name__ == "__main__":
     # create the tables if they don't exist
+    
     with app.app_context():
         db.create_all()
     app.run(host='0.0.0.0')
