@@ -72,7 +72,22 @@ def admin_users():
 @blueprint.route('/admin/user/<int:id>')
 def userDetails(id):
     user = Users.query.get(id)
-    return render_template('home/userDetails_id.html', user=user)
+    readingList=ReadingList.query.filter_by(user_id=id).all()
+    comments=Comment.query.filter_by(user_id=id).all()
+    reports=Report.query.filter_by(user_id=id).all()
+    books=Book.query.filter_by(user_id=id).all()
+    profile=Profile.query.filter_by(user_id=id).all()
+    subscriptions=Subscriptions.query.filter_by(user_id=id).all()
+    followers=Follower.query.filter_by(user_id=id).all()
+    return render_template('home/userDetails_id.html', user=user,readingList=readingList,comments=comments,reports=reports,books=books,profile=profile,subscriptions=subscriptions,followers=followers)
+    
+
+@blueprint.route('/user/<int:id>/action/delete')
+def userDelete(id):
+    user = Users.query.get(id)
+    db.session.delete(user)
+    db.session.commit()
+    return redirect('/admin/users')
 
 @blueprint.route('/admin/categories')
 def admin_categories():
