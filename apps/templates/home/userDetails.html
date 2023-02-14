@@ -24,7 +24,7 @@
                   <p class="card-subtitle card-subtitle-dash">You have {{users|length}} registered users</p>
                 </div>
                 <div>
-                  <!-- <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-account-plus"></i>Add new member</button> -->
+                   <a href= "/register.html"><button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-account-plus"></i>Add new member</button></a>
                 </div>
               </div>
               <div class="table-responsive  mt-1">
@@ -74,7 +74,7 @@
                       <td><div class="badge badge-opacity-warning">{{user.last_seen.date()}}</div></td>
                       <td>
                         <div class="d-flex">
-                          <a href="/admin/user/{{user.id}}" class="btn btn-primary btn-sm text-white me-1">View</a>
+                          <a href="/user.html" class="btn btn-primary btn-sm text-white me-1">View</a>
                           <a href="/user/{{user.id}}/action/delete" class="btn btn-primary btn-sm text-white me-1">Delete</a>
                         </div>
                       </td>
