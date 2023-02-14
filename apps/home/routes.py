@@ -99,6 +99,13 @@ def categories(id):
     category = Category.query.get(id)
     return render_template('home/categories_id.html', category=category)
 
+@blueprint.route('/category/<int:id>/action/delete')
+def categoryDelete(id):
+    category = Category.query.get(id)
+    db.session.delete(category)
+    db.session.commit()
+    return redirect('/admin/categories')
+
 @blueprint.route('/admin/books')
 def admin_books():
     books = Book.query.all()
