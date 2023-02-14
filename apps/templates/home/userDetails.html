@@ -74,9 +74,8 @@
                       <td><div class="badge badge-opacity-warning">{{user.last_seen.date()}}</div></td>
                       <td>
                         <div class="d-flex">
-                          <a href="" class="btn btn-primary btn-sm text-white me-1">View</a>
-                          <a href="" class="btn btn-primary btn-sm text-white me-1">Edit</a>
-                          <a href="" class="btn btn-primary btn-sm text-white me-1">Delete</a>
+                          <a href="/admin/user/{{user.id}}" class="btn btn-primary btn-sm text-white me-1">View</a>
+                          <a href="/user/{{user.id}}/action/delete" class="btn btn-primary btn-sm text-white me-1">Delete</a>
                         </div>
                       </td>
                     </tr>
