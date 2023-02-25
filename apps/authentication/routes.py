@@ -195,3 +195,18 @@ def api_category_add():
     db.session.add(category)
     db.session.commit()
     return jsonify({'status': 'success'})
+
+
+@blueprint.route('/api/v1/book/<int:category_id>', methods=['POST'])
+def api_book_add(category_id):
+    book = Book(**request.form)
+    db.session.add(book)
+    db.session.commit()
+    return jsonify({'status': 'success'})
+
+@blueprint.route('/api/v1/book/<int:book_id>', methods=['GET'])
+def api_book(book_id):
+    book = Book.query.filter_by(id=book_id).first()
+    if book:
+        return jsonify({'status': 'OK', 'book': book.to_json()})
+    return jsonify({'status': 'ERROR', 'book': ''})
