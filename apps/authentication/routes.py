@@ -137,6 +137,7 @@ def api_login():
 def api_register():
     username = request.form['username']
     email = request.form['email']
+    password = request.form['password']
     # Check usename exists
     user = Users.query.filter_by(username=username).first()
     if user:
