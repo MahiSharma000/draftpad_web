@@ -181,9 +181,9 @@ def api_profile_update(user_id):
     return jsonify({'status': 'ERROR', 'profile': ''})
 
 @blueprint.route('/api/v1/category', methods=['GET'])
-def api_category(user_id):
+def api_category(category_id):
     if current_user.is_authenticated:
-        categories = Category.query.filter_by(user_id=user_id).all()
+        categories = Category.query.filter_by(category_id=category_id).all()
         if categories:
             return jsonify({'status': 'OK', 'categories': [category.to_json() for category in categories]})
         return jsonify({'status': 'ERROR', 'categories': ''})
@@ -197,8 +197,8 @@ def api_category_add():
     return jsonify({'status': 'success'})
 
 
-@blueprint.route('/api/v1/book/<int:category_id>', methods=['POST'])
-def api_book_add(category_id):
+@blueprint.route('/api/v1/book', methods=['POST'])
+def api_book_add():
     book = Book(**request.form)
     db.session.add(book)
     db.session.commit()
