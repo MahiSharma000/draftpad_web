@@ -5,6 +5,8 @@ from apps import db, login_manager
 from apps.authentication.util import hash_pass
 from datetime import datetime, timedelta
 
+
+
 class Users(db.Model, UserMixin):
 
     __tablename__ = 'Users'
@@ -128,6 +130,12 @@ class Category(db.Model):
 
     def __repr__(self):
         return str(self.name)
+    
+    def to_json(self):
+        return {
+            'id' : self.id,
+            'name' : self.name
+        }
 
 class Book(db.Model):
     status_info = {
@@ -168,6 +176,21 @@ class Book(db.Model):
     def update_status(self, status_value):
         self.status = self.status_info[status_value]
         db.session.commit()
+
+    def to_json(self):
+        return {
+            'id' : self.id,
+            'title' : self.title,
+            'category_id' : self.category_id,
+            'user_id' : self.user_id,
+            'cover' : self.cover,
+            'status' : self.status,
+            'description' : self.description,
+            'created_at' : self.created_at,
+            'updated_at' : self.updated_at,
+            'views' : self.views,
+            'lang' : self.lang
+        }
 
 class Chapter(db.Model):
 
