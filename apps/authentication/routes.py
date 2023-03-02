@@ -130,8 +130,8 @@ def api_login():
     user = Users.query.filter_by(username=username).first()
     # Check the password
     if user and verify_pass(password, user.password):
-        return jsonify({'status': 'OK', 'user': user.username, 'email': user.email, 'id': user.id})
-    return jsonify({'status': 'ERROR', 'user': '', 'email': '', 'id': ''})
+        return jsonify({'status': 'OK', 'username': user.username, 'email': user.email, 'id': user.id})
+    return jsonify({'status': 'ERROR', 'username': '', 'email': '', 'id': ''})
 
 @blueprint.route('/api/v1/register', methods=['POST'])
 def api_register():
@@ -183,14 +183,24 @@ def api_profile_update(user_id):
         return jsonify({'status': 'OK', 'profile': profile.to_json()})
     return jsonify({'status': 'ERROR', 'profile': ''})
 
+# all categories
+@blueprint.route('/api/v1/categories', methods=['GET'])
+def api_categories():
+    categories = Category.query.all()
+    if categories:
+        return jsonify({'status': 'OK', 'categories': [category.to_json() for category in categories]})
+    return jsonify({'status': 'ERROR', 'categories': ''})
+
+
+
 @blueprint.route('/api/v1/category', methods=['GET'])
 def api_category(category_id):
-    if current_user.is_authenticated:
-        categories = Category.query.filter_by(category_id=category_id).all()
-        if categories:
-            return jsonify({'status': 'OK', 'categories': [category.to_json() for category in categories]})
-        return jsonify({'status': 'ERROR', 'categories': ''})
-    return jsonify({'status': 'ERROR', 'categories': ''})
+    #get book based on category
+    books = Book.query.filter_by(category_id=category_id).all()
+    if books:
+        return jsonify({'status': 'OK', 'books': [book.to_json() for book in books]})
+    return jsonify({'status': 'ERROR', 'books': ''})
+
 
 @blueprint.route('/api/v1/category', methods=['POST'])
 def api_category_add():
