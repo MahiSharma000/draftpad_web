@@ -135,9 +135,11 @@ def api_login():
 
 @blueprint.route('/api/v1/register', methods=['POST'])
 def api_register():
+    print(request.form)
     username = request.form['username']
     email = request.form['email']
     password = request.form['password']
+
     # Check usename exists
     user = Users.query.filter_by(username=username).first()
     if user:
@@ -147,7 +149,7 @@ def api_register():
     if user:
         return jsonify({'status': 'ERROR', 'msg': 'Email already registered'})
     # else we can create the user
-    user = Users(**request.form)
+    user = Users(username=username, email=email, password=password)
     db.session.add(user)
     db.session.commit()
     return jsonify({'status': 'OK', 'msg': 'User created please login'})
