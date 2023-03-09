@@ -140,6 +140,7 @@ def api_register():
     email = request.form['email']
     password = request.form['password']
 
+
     # Check usename exists
     user = Users.query.filter_by(username=username).first()
     if user:
@@ -167,21 +168,54 @@ def api_user(user_id):
 
 @blueprint.route('/api/v1/profile/<int:user_id>', methods=['GET'])
 def api_profile(user_id):
-    if current_user.is_authenticated:
-        profile = Profile.query.filter_by(user_id=user_id).first()
-        if profile:
-            return jsonify({'status': 'OK', 'profile': profile.to_json()})
-        return jsonify({'status': 'ERROR', 'profile': ''})
-    return jsonify({'status': 'ERROR', 'profile': ''})
-
-@blueprint.route('/api/v1/profile/<int:user_id>', methods=['POST'])
-def api_profile_update(user_id):
     profile = Profile.query.filter_by(user_id=user_id).first()
     if profile:
-        profile.update(**request.form)
-        db.session.commit()
         return jsonify({'status': 'OK', 'profile': profile.to_json()})
     return jsonify({'status': 'ERROR', 'profile': ''})
+
+@blueprint.route('/api/v1/profile', methods=['POST'])
+def api_profile_update():
+    user_id = request.form['user_id']
+    if user_id:
+        profile = Profile.query.filter_by(user_id=user_id).first()
+        user = Users.query.filter_by(id=user_id).first()
+        if profile:
+            profile.update(
+                user_id=request.form['user_id'],
+                first_name=request.form['first_name'],
+                last_name=request.form['last_name'],
+                about=request.form['about'],
+                profile_pic=request.form['profile_pic'],
+                book_written = request.form['book_written'],
+                followers = request.form['followers'],
+                following = request.form['following'],
+                is_premium = request.form['is_premium'],
+                books_read = request.form['books_read'],
+                dob = request.form['dob'],
+                phone = request.form['phone']
+            )
+            db.session.commit()
+            return jsonify({'status': 'OK'})
+        else:
+            profile = Profile(
+                user_id=request.form['user_id'],
+                first_name=request.form['first_name'],
+                last_name=request.form['last_name'],
+                about=request.form['about'],
+                profile_pic=request.form['profile_pic'],
+                book_written = request.form['book_written'],
+                followers = request.form['followers'],
+                following = request.form['following'],
+                is_premium = request.form['is_premium'],
+                books_read = request.form['books_read'],
+                dob = request.form['dob'],
+                phone = request.form['phone']
+                
+            )
+            db.session.add(profile)
+            db.session.commit()
+            return jsonify({'status': 'OK'})
+    return jsonify({'status': 'ERROR'})
 
 # all categories
 @blueprint.route('/api/v1/categories', methods=['GET'])
@@ -193,13 +227,31 @@ def api_categories():
 
 
 
-@blueprint.route('/api/v1/category', methods=['GET'])
+@blueprint.route('/api/v1/category/<int:category_id>', methods=['GET'])
 def api_category(category_id):
-    #get book based on category
+    #get books by category id
     books = Book.query.filter_by(category_id=category_id).all()
     if books:
-        return jsonify({'status': 'OK', 'books': [book.to_json() for book in books]})
-    return jsonify({'status': 'ERROR', 'books': ''})
+        book_data = []
+        for book in books:
+            user = Users.query.filter_by(id=book.user_id).first()
+            chapter_count = Chapter.query.filter_by(book_id=book.id).count() 
+            book_data.append({
+                'id': book.id,
+                'cover': book.cover,
+                'title': book.title,
+                'user_id': book.user_id,
+                'username': user.username,
+                'category_id': book.category_id,
+                'description': book.description,
+                'created_at': book.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_at': book.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'lang': book.lang,
+                'views': book.views,
+                'chapters': chapter_count
+            })
+        return jsonify({'status': 'OK', 'books': book_data})
+    return jsonify({'status': 'OK', 'books': []})    
 
 
 @blueprint.route('/api/v1/category', methods=['POST'])
@@ -215,7 +267,7 @@ def api_book_add():
     book = Book(**request.form)
     db.session.add(book)
     db.session.commit()
-    return jsonify({'status': 'success'})
+    return jsonify({'status': 'success', 'msg': 'Book added'})
 
 @blueprint.route('/api/v1/book/<int:book_id>', methods=['GET'])
 def api_book(book_id):
