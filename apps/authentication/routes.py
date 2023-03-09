@@ -275,3 +275,17 @@ def api_book(book_id):
     if book:
         return jsonify({'status': 'OK', 'book': book.to_json()})
     return jsonify({'status': 'ERROR', 'book': ''})
+
+@blueprint.route('/api/v1/chapter', methods=['GET'])
+def api_book_chapters(book_id):
+    chapters = Chapter.query.filter_by(book_id=book_id).all()
+    if chapters:
+        return jsonify({'status': 'OK', 'chapters': [chapter.to_json() for chapter in chapters]})
+    return jsonify({'status': 'ERROR', 'chapters': ''})
+
+@blueprint.route('api/v1/chapter', methods=['POST'])
+def api_chapter_add():
+    chapter = Chapter(**request.form)
+    db.session.add(chapter)
+    db.session.commit()
+    return jsonify({'status': 'success', 'msg': 'Chapter added'})
