@@ -275,3 +275,19 @@ def api_book(book_id):
     if book:
         return jsonify({'status': 'OK', 'book': book.to_json()})
     return jsonify({'status': 'ERROR', 'book': ''})
+
+#get comments by chapter id
+@blueprint.route('/api/v1/comments/<int:chapter_id>', methods=['GET'])
+def api_comments(chapter_id):
+    comments = Comment.query.filter_by(chapter_id=chapter_id).all()
+    if comments:
+        return jsonify({'status': 'OK', 'comments': [comment.to_json() for comment in comments]})
+    return jsonify({'status': 'ERROR', 'comments': ''})
+
+#post comment by chapter id
+@blueprint.route('/api/v1/comment', methods=['POST'])
+def api_comment_add():
+    comment = Comment(**request.form)
+    db.session.add(comment)
+    db.session.commit()
+    return jsonify({'status': 'success', 'msg': 'Comment added'})
