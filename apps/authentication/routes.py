@@ -276,7 +276,6 @@ def api_book(book_id):
         return jsonify({'status': 'OK', 'book': book.to_json()})
     return jsonify({'status': 'ERROR', 'book': ''})
 
-<<<<<<< HEAD
 #get comments by chapter id
 @blueprint.route('/api/v1/comments/<int:chapter_id>', methods=['GET'])
 def api_comments(chapter_id):
@@ -292,7 +291,7 @@ def api_comment_add():
     db.session.add(comment)
     db.session.commit()
     return jsonify({'status': 'success', 'msg': 'Comment added'})
-=======
+
 @blueprint.route('/api/v1/chapter', methods=['GET'])
 def api_book_chapters(book_id):
     chapters = Chapter.query.filter_by(book_id=book_id).all()
@@ -306,4 +305,4 @@ def api_chapter_add():
     db.session.add(chapter)
     db.session.commit()
     return jsonify({'status': 'success', 'msg': 'Chapter added'})
->>>>>>> 0c9c0bebf7fc92cb0e97f165abaf32267a5c1f05
+
