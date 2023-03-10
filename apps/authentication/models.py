@@ -155,6 +155,7 @@ class Book(db.Model):
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
     views = db.Column(db.Integer, default=0)
     lang = db.Column(db.String(64), default='en')
+    
 
     def save(self):
         db.session.add(self)
