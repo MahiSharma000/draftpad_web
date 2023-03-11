@@ -273,7 +273,24 @@ def api_book_add():
 def api_book(book_id):
     book = Book.query.filter_by(id=book_id).first()
     if book:
-        return jsonify({'status': 'OK', 'book': book.to_json()})
+       
+        user = Users.query.filter_by(id=book.user_id).first()
+        chapter_count = Chapter.query.filter_by(book_id=book.id).count() 
+        book_data= ({
+            'id': book.id,
+            'cover': book.cover,
+            'title': book.title,
+            'user_id': book.user_id,
+            'username': user.username,
+            'category_id': book.category_id,
+            'description': book.description,
+            'created_at': book.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'updated_at': book.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'lang': book.lang,
+            'views': book.views,
+            'chapters': chapter_count
+        })
+        return jsonify({'status': 'OK', 'book': book_data})
     return jsonify({'status': 'ERROR', 'book': ''})
 
 #get comments by chapter id
@@ -281,8 +298,20 @@ def api_book(book_id):
 def api_comments(chapter_id):
     comments = Comment.query.filter_by(chapter_id=chapter_id).all()
     if comments:
-        return jsonify({'status': 'OK', 'comments': [comment.to_json() for comment in comments]})
-    return jsonify({'status': 'ERROR', 'comments': ''})
+        comment_data= []
+        for comment in comments:
+            user = Users.query.filter_by(id=comment.user_id).first()
+            comment_data.append({
+                'id': comment.id,
+                'user_id': comment.user_id,
+                'username': user.username,
+                'chapter_id': comment.chapter_id,
+                'content': comment.content,
+                'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_at': comment.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+            })
+        return jsonify({'status': 'OK', 'comments': comment_data})
+    return jsonify({'status': 'ERROR', 'comments': []})
 
 #post comment by chapter id
 @blueprint.route('/api/v1/comment', methods=['POST'])
@@ -292,12 +321,56 @@ def api_comment_add():
     db.session.commit()
     return jsonify({'status': 'success', 'msg': 'Comment added'})
 
-@blueprint.route('/api/v1/chapter', methods=['GET'])
-def api_book_chapters(book_id):
+
+@blueprint.route('/api/v1/chapters/<int:book_id>', methods=['GET'])
+def api_chapters(book_id):
     chapters = Chapter.query.filter_by(book_id=book_id).all()
     if chapters:
-        return jsonify({'status': 'OK', 'chapters': [chapter.to_json() for chapter in chapters]})
-    return jsonify({'status': 'ERROR', 'chapters': ''})
+        
+        chapter_data = []
+        for chapter in chapters:
+            book = Book.query.filter_by(id=chapter.book_id).first()
+            chapter_data.append({
+                'id': chapter.id,
+                'title': chapter.title,
+                'content': chapter.content,
+                'book_id': chapter.book_id,
+                'book_title': book.title,
+                'book_views': book.views,
+                'category_id': chapter.category_id,
+                'user_id' : chapter.user_id,
+                'created_at': chapter.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_at': chapter.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'status' : chapter.status,
+                'total_likes' : chapter.total_likes,
+                'total_comments' : chapter.total_comments,
+            })
+        return jsonify({'status': 'OK', 'chapters': chapter_data})
+    return jsonify({'status': 'ERROR', 'chapters': []})
+
+#get a chapter by chapter id
+@blueprint.route('/api/v1/chapter/<int:chapter_id>', methods=['GET'])
+def api_chapter(chapter_id):
+    chapter = Chapter.query.filter_by(id=chapter_id).first()
+    if chapter:
+        book = Book.query.filter_by(id=chapter.book_id).first()
+        chapter_data=({
+            'id': chapter.id,
+            'title': chapter.title,
+            'content': chapter.content,
+            'book_id': chapter.book_id,
+            'book_title': book.title,
+            'book_views': book.views,
+            'category_id': chapter.category_id,
+            'user_id' : chapter.user_id,
+            'created_at': chapter.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'updated_at': chapter.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'status' : chapter.status,
+            'total_likes' : chapter.total_likes,
+            'total_comments' : chapter.total_comments,
+            })
+        return jsonify({'status': 'OK', 'chapter': chapter_data})
+    return jsonify({'status': 'ERROR', 'chapter': ''})
 
 @blueprint.route('api/v1/chapter', methods=['POST'])
 def api_chapter_add():
