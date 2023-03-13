@@ -170,7 +170,24 @@ def api_user(user_id):
 def api_profile(user_id):
     profile = Profile.query.filter_by(user_id=user_id).first()
     if profile:
-        return jsonify({'status': 'OK', 'profile': profile.to_json()})
+        user = Users.query.filter_by(id=profile.user_id).first()
+        
+        profile_data= ({
+            'user_id': profile.user_id,
+            'first_name': profile.first_name,
+            'last_name': profile.last_name,
+            'about': profile.about,
+            'profile_pic': profile.profile_pic,
+            'book_written': profile.book_written,
+            'followers': profile.followers,
+            'following': profile.following,
+            'username': user.username,
+            'is_premium': profile.is_premium,
+            'book_read': profile.book_read,
+            'dob': profile.dob,
+            'phone': profile.phone
+        })
+        return jsonify({'status': 'OK', 'profile': profile_data})
     return jsonify({'status': 'ERROR', 'profile': ''})
 
 @blueprint.route('/api/v1/profile', methods=['POST'])
@@ -237,10 +254,12 @@ def api_category(category_id):
             user = Users.query.filter_by(id=book.user_id).first()
             chapter_count = Chapter.query.filter_by(book_id=book.id).count() 
             book_data.append({
+                'status' :book.status,
                 'id': book.id,
                 'cover': book.cover,
                 'title': book.title,
                 'user_id': book.user_id,
+                
                 'username': user.username,
                 'category_id': book.category_id,
                 'description': book.description,
@@ -282,6 +301,7 @@ def api_book(book_id):
             'title': book.title,
             'user_id': book.user_id,
             'username': user.username,
+            'status' :book.status,
             'category_id': book.category_id,
             'description': book.description,
             'created_at': book.created_at.strftime('%Y-%m-%d %H:%M:%S'),
