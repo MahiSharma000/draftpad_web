@@ -399,3 +399,22 @@ def api_chapter_add():
     db.session.commit()
     return jsonify({'status': 'success', 'msg': 'Chapter added'})
 
+#get the followers of a user
+@blueprint.route('/api/v1/followers/<int:user_id>', methods=['GET'])
+def api_followers(user_id):
+    followers = Follower.query.filter_by(user_id=user_id).all()
+    if followers:
+        follower_data = []
+        for follower in followers:
+            user = Users.query.filter_by(id=follower.follower_id).first()
+            follower_data.append({
+                'id': follower.id,
+                'user_id': follower.user_id,
+                'follower_id': follower.follower_id,
+                'username': user.username,
+                'created_at': follower.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_at': follower.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+            })
+        return jsonify({'status': 'OK', 'followers': follower_data})
+    return jsonify({'status': 'ERROR', 'followers': []})
+
