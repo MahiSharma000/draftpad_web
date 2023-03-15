@@ -55,6 +55,7 @@ def request_loader(request):
 class Profile(db.Model):
     __tablename__ = 'Profiles'
 
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
     first_name = db.Column(db.String(64))
