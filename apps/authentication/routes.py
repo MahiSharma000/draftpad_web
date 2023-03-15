@@ -202,20 +202,6 @@ def api_profile_update():
         dob = covert_str_to_date(request.form['dob'])
         print('dob', dob)
         if profile:
-            
-            # profile.update(
-            #     first_name=request.form['first_name'],
-            #     last_name=request.form['last_name'],
-            #     about=request.form['about'],
-            #     profile_pic=request.form['profile_pic'],
-            #     book_written = request.form['book_written'],
-            #     followers = request.form['followers'],
-            #     following = request.form['following'],
-            #     is_premium = True if request.form['is_premium'] == 'true' else False,
-            #     books_read = request.form['books_read'],
-            #     dob = dob,
-            #     phone = request.form['phone']
-            # )
             profile.first_name = request.form['first_name']
             profile.last_name = request.form['last_name']
             profile.about = request.form['about']
@@ -325,7 +311,6 @@ def api_category(category_id):
                 'cover': book.cover,
                 'title': book.title,
                 'user_id': book.user_id,
-                
                 'username': user.username,
                 'category_id': book.category_id,
                 'description': book.description,
@@ -353,7 +338,6 @@ def api_category_add():
 def api_book(book_id):
     book = Book.query.filter_by(id=book_id).first()
     if book:
-       
         user = Users.query.filter_by(id=book.user_id).first()
         chapter_count = Chapter.query.filter_by(book_id=book.id).count() 
         book_data= ({
@@ -401,7 +385,7 @@ def api_comment_add():
         comment = Comment(
         content = request.form.get('content'),
         user_id = request.form.get('user_id'),
-        chapter_id = request.form.get('chapter_id')
+        chapter_id = request.form.get('chapter_id'),
         )
         db.session.add(comment)
         db.session.commit()
