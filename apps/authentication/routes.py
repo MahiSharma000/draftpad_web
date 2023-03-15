@@ -166,8 +166,6 @@ def api_user(user_id):
         return jsonify({'status': 'OK', 'user': user.username, 'email': user.email, 'id': user.id})
     return jsonify({'status': 'ERROR', 'user': '', 'email': '', 'id': ''})
 
-<<<<<<< HEAD
-=======
 @blueprint.route('/api/v1/profile/<int:user_id>', methods=['GET'])
 def api_profile(user_id):
     profile = Profile.query.filter_by(user_id=user_id).first()
@@ -191,7 +189,7 @@ def api_profile(user_id):
         })
         return jsonify({'status': 'OK', 'profile': profile_data})
     return jsonify({'status': 'ERROR', 'profile': ''})
->>>>>>> fe942a25c7732c4e54e32134530ae0d014a09efb
+
 
 @blueprint.route('/api/v1/profile', methods=['POST'])
 def api_profile_update():
