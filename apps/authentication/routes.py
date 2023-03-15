@@ -166,6 +166,32 @@ def api_user(user_id):
         return jsonify({'status': 'OK', 'user': user.username, 'email': user.email, 'id': user.id})
     return jsonify({'status': 'ERROR', 'user': '', 'email': '', 'id': ''})
 
+<<<<<<< HEAD
+=======
+@blueprint.route('/api/v1/profile/<int:user_id>', methods=['GET'])
+def api_profile(user_id):
+    profile = Profile.query.filter_by(user_id=user_id).first()
+    if profile:
+        user = Users.query.filter_by(id=profile.user_id).first()
+        
+        profile_data= ({
+            'user_id': profile.user_id,
+            'first_name': profile.first_name,
+            'last_name': profile.last_name,
+            'about': profile.about,
+            'profile_pic': profile.profile_pic,
+            'book_written': profile.book_written,
+            'followers': profile.followers,
+            'following': profile.following,
+            'username': user.username,
+            'is_premium': profile.is_premium,
+            'book_read': profile.book_read,
+            'dob': profile.dob,
+            'phone': profile.phone
+        })
+        return jsonify({'status': 'OK', 'profile': profile_data})
+    return jsonify({'status': 'ERROR', 'profile': ''})
+>>>>>>> fe942a25c7732c4e54e32134530ae0d014a09efb
 
 @blueprint.route('/api/v1/profile', methods=['POST'])
 def api_profile_update():
@@ -271,10 +297,12 @@ def api_category(category_id):
             user = Users.query.filter_by(id=book.user_id).first()
             chapter_count = Chapter.query.filter_by(book_id=book.id).count() 
             book_data.append({
+                'status' :book.status,
                 'id': book.id,
                 'cover': book.cover,
                 'title': book.title,
                 'user_id': book.user_id,
+                
                 'username': user.username,
                 'category_id': book.category_id,
                 'description': book.description,
@@ -311,6 +339,7 @@ def api_book(book_id):
             'title': book.title,
             'user_id': book.user_id,
             'username': user.username,
+            'status' :book.status,
             'category_id': book.category_id,
             'description': book.description,
             'created_at': book.created_at.strftime('%Y-%m-%d %H:%M:%S'),
@@ -414,4 +443,23 @@ def api_chapter_add():
     db.session.add(chapter)
     db.session.commit()
     return jsonify({'status': 'success', 'msg': 'Chapter added'})
+
+#get the followers of a user
+@blueprint.route('/api/v1/followers/<int:user_id>', methods=['GET'])
+def api_followers(user_id):
+    followers = Follower.query.filter_by(user_id=user_id).all()
+    if followers:
+        follower_data = []
+        for follower in followers:
+            user = Users.query.filter_by(id=follower.follower_id).first()
+            follower_data.append({
+                'id': follower.id,
+                'user_id': follower.user_id,
+                'follower_id': follower.follower_id,
+                'username': user.username,
+                'created_at': follower.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_at': follower.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+            })
+        return jsonify({'status': 'OK', 'followers': follower_data})
+    return jsonify({'status': 'ERROR', 'followers': []})
 
