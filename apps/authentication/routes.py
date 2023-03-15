@@ -190,6 +190,8 @@ def api_profile(user_id):
         return jsonify({'status': 'OK', 'profile': profile_data})
     return jsonify({'status': 'ERROR', 'profile': ''})
 
+def covert_str_to_date(date_str):
+    return datetime.strptime(date_str, '%d-%m-%Y')
 
 @blueprint.route('/api/v1/profile', methods=['POST'])
 def api_profile_update():
@@ -197,21 +199,34 @@ def api_profile_update():
     if user_id:
         profile = Profile.query.filter_by(user_id=user_id).first()
         user = Users.query.filter_by(id=user_id).first()
+        dob = covert_str_to_date(request.form['dob'])
+        print('dob', dob)
         if profile:
-            profile.update(
-                user_id=request.form['user_id'],
-                first_name=request.form['first_name'],
-                last_name=request.form['last_name'],
-                about=request.form['about'],
-                profile_pic=request.form['profile_pic'],
-                book_written = request.form['book_written'],
-                followers = request.form['followers'],
-                following = request.form['following'],
-                is_premium = request.form['is_premium'],
-                books_read = request.form['books_read'],
-                dob = request.form['dob'],
-                phone = request.form['phone']
-            )
+            
+            # profile.update(
+            #     first_name=request.form['first_name'],
+            #     last_name=request.form['last_name'],
+            #     about=request.form['about'],
+            #     profile_pic=request.form['profile_pic'],
+            #     book_written = request.form['book_written'],
+            #     followers = request.form['followers'],
+            #     following = request.form['following'],
+            #     is_premium = True if request.form['is_premium'] == 'true' else False,
+            #     books_read = request.form['books_read'],
+            #     dob = dob,
+            #     phone = request.form['phone']
+            # )
+            profile.first_name = request.form['first_name']
+            profile.last_name = request.form['last_name']
+            profile.about = request.form['about']
+            profile.profile_pic = request.form['profile_pic']
+            profile.book_written = request.form['book_written']
+            profile.followers = request.form['followers']
+            profile.following = request.form['following']
+            profile.is_premium = True if request.form['is_premium'] == 'true' else False
+            profile.books_read = request.form['books_read']
+            profile.dob = dob
+            profile.phone = request.form['phone']
             db.session.commit()
             return jsonify({'status': 'OK'})
         else:
@@ -224,9 +239,9 @@ def api_profile_update():
                 book_written = request.form['book_written'],
                 followers = request.form['followers'],
                 following = request.form['following'],
-                is_premium = request.form['is_premium'],
+                is_premium = True if request.form['is_premium'] == 'true' else False,
                 books_read = request.form['books_read'],
-                dob = request.form['dob'],
+                dob = dob,
                 phone = request.form['phone']
                 
             )
@@ -237,7 +252,12 @@ def api_profile_update():
 
 @blueprint.route('/api/v1/book', methods=['POST'])
 def api_book_add():
-    book = Book(**request.form)
+    book = Book(
+        title=request.form['title'],
+        description=request.form['description'],
+        cover=request.form['cover'],
+        user_id = request.form['user_id'],
+    )
     db.session.add(book)
     db.session.commit()
     return jsonify({'status': 'success', 'msg': 'Book added'})
@@ -250,15 +270,15 @@ def api_categories():
         return jsonify({'status': 'OK', 'categories': [category.to_json() for category in categories]})
     return jsonify({'status': 'ERROR', 'categories': ''})
 
-@blueprint.route('/api/v1/profile', methods=['GET'])
-def api_profile(user_id):
+@blueprint.route('/api/v1/profile/<int:user_id>', methods=['GET'])
+def api_get_profile(user_id):
     profile = Profile.query.filter_by(user_id=user_id).first()
     if profile:
         return jsonify({'status': 'OK', 'profile': profile.to_json()})
     return jsonify({'status': 'ERROR', 'profile': ''})
 
 @blueprint.route('/api/v1/get_profile/<int:user_id>', methods=['GET'])
-def api_get_profile(user_id):
+def api_author_profile(user_id):
     #get profile by user id
     profile = Profile.query.filter_by(user_id=user_id).all()
     if profile:
@@ -279,9 +299,14 @@ def api_get_profile(user_id):
                 'is_premium': profile.is_premium,
                 'books_read': profile.books_read,
                 'dob': profile.dob,
-                'phone': profile.phone
+                'phone': profile.phone,
+                'created_at': profile.created_at,
+                'updated_at': profile.updated_at,
+
             })
-        return jsonify({'status': 'OK', 'profile': profile_data})
+        print(profile_data)
+        return jsonify({'status': 'OK', 'author': profile_data[0]})
+    return jsonify({'status': 'ERROR', 'author': ''})
 
 
 
