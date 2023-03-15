@@ -202,20 +202,6 @@ def api_profile_update():
         dob = covert_str_to_date(request.form['dob'])
         print('dob', dob)
         if profile:
-            
-            # profile.update(
-            #     first_name=request.form['first_name'],
-            #     last_name=request.form['last_name'],
-            #     about=request.form['about'],
-            #     profile_pic=request.form['profile_pic'],
-            #     book_written = request.form['book_written'],
-            #     followers = request.form['followers'],
-            #     following = request.form['following'],
-            #     is_premium = True if request.form['is_premium'] == 'true' else False,
-            #     books_read = request.form['books_read'],
-            #     dob = dob,
-            #     phone = request.form['phone']
-            # )
             profile.first_name = request.form['first_name']
             profile.last_name = request.form['last_name']
             profile.about = request.form['about']
@@ -261,6 +247,39 @@ def api_book_add():
     db.session.add(book)
     db.session.commit()
     return jsonify({'status': 'success', 'msg': 'Book added'})
+
+@blueprint.route('api/v1/chapter', methods=['POST'])
+def api_chapter_update():
+    book_id = request.form['book_id']
+    if book_id:
+        chapter= Chapter.query.filter_by(book_id=book_id).first()
+        if chapter:
+            chapter.title = request.form['title']
+            chapter.content = request.form['content']
+            chapter.book_id = request.form['book_id']
+            chapter.user_id = request.form['user_id']
+            chapter.status = request.form['status']
+            chapter.total_comments = request.form['total_comments']
+            chapter.total_likes = request.form['total_likes']
+            chapter.category_id = request.form['category_id']
+            db.session.commit()
+            return jsonify({'status': 'OK'})
+        else:
+            chapter = Chapter(
+                title=request.form['title'],
+                content=request.form['content'],
+                book_id=request.form['book_id'],
+                user_id=request.form['user_id'],
+                status=request.form['status'],
+                total_comments=request.form['total_comments'],
+                total_likes=request.form['total_likes'],
+                category_id=request.form['category_id']
+            )
+            db.session.add(chapter)
+            db.session.commit()
+            return jsonify({'status': 'OK'})
+    return jsonify({'status': 'ERROR'})
+
 
 # all categories
 @blueprint.route('/api/v1/categories', methods=['GET'])
@@ -414,7 +433,6 @@ def api_comment_add():
 def api_chapters(book_id):
     chapters = Chapter.query.filter_by(book_id=book_id).all()
     if chapters:
-        
         chapter_data = []
         for chapter in chapters:
             book = Book.query.filter_by(id=chapter.book_id).first()
@@ -460,12 +478,7 @@ def api_chapter(chapter_id):
         return jsonify({'status': 'OK', 'chapter': chapter_data})
     return jsonify({'status': 'ERROR', 'chapter': ''})
 
-@blueprint.route('api/v1/chapter', methods=['POST'])
-def api_chapter_add():
-    chapter = Chapter(**request.form)
-    db.session.add(chapter)
-    db.session.commit()
-    return jsonify({'status': 'success', 'msg': 'Chapter added'})
+
 
 #get the followers of a user
 @blueprint.route('/api/v1/followers/<int:user_id>', methods=['GET'])
