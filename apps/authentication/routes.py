@@ -166,12 +166,6 @@ def api_user(user_id):
         return jsonify({'status': 'OK', 'user': user.username, 'email': user.email, 'id': user.id})
     return jsonify({'status': 'ERROR', 'user': '', 'email': '', 'id': ''})
 
-@blueprint.route('/api/v1/profile/<int:user_id>', methods=['GET'])
-def api_profile(user_id):
-    profile = Profile.query.filter_by(user_id=user_id).first()
-    if profile:
-        return jsonify({'status': 'OK', 'profile': profile.to_json()})
-    return jsonify({'status': 'ERROR', 'profile': ''})
 
 @blueprint.route('/api/v1/profile', methods=['POST'])
 def api_profile_update():
@@ -217,6 +211,13 @@ def api_profile_update():
             return jsonify({'status': 'OK'})
     return jsonify({'status': 'ERROR'})
 
+@blueprint.route('/api/v1/book', methods=['POST'])
+def api_book_add():
+    book = Book(**request.form)
+    db.session.add(book)
+    db.session.commit()
+    return jsonify({'status': 'success', 'msg': 'Book added'})
+
 # all categories
 @blueprint.route('/api/v1/categories', methods=['GET'])
 def api_categories():
@@ -224,6 +225,39 @@ def api_categories():
     if categories:
         return jsonify({'status': 'OK', 'categories': [category.to_json() for category in categories]})
     return jsonify({'status': 'ERROR', 'categories': ''})
+
+@blueprint.route('/api/v1/profile', methods=['GET'])
+def api_profile(user_id):
+    profile = Profile.query.filter_by(user_id=user_id).first()
+    if profile:
+        return jsonify({'status': 'OK', 'profile': profile.to_json()})
+    return jsonify({'status': 'ERROR', 'profile': ''})
+
+@blueprint.route('/api/v1/get_profile/<int:user_id>', methods=['GET'])
+def api_get_profile(user_id):
+    #get profile by user id
+    profile = Profile.query.filter_by(user_id=user_id).all()
+    if profile:
+        profile_data = []
+        for profile in profile:
+            user = Users.query.filter_by(id=profile.user_id).first()
+            profile_data.append({
+                'id': profile.id,
+                'user_id': profile.user_id,
+                'username': user.username,
+                'first_name': profile.first_name,
+                'last_name': profile.last_name,
+                'about': profile.about,
+                'profile_pic': profile.profile_pic,
+                'book_written': profile.book_written,
+                'followers': profile.followers,
+                'following': profile.following,
+                'is_premium': profile.is_premium,
+                'books_read': profile.books_read,
+                'dob': profile.dob,
+                'phone': profile.phone
+            })
+        return jsonify({'status': 'OK', 'profile': profile_data})
 
 
 
@@ -262,12 +296,7 @@ def api_category_add():
     return jsonify({'status': 'success'})
 
 
-@blueprint.route('/api/v1/book', methods=['POST'])
-def api_book_add():
-    book = Book(**request.form)
-    db.session.add(book)
-    db.session.commit()
-    return jsonify({'status': 'success', 'msg': 'Book added'})
+
 
 @blueprint.route('/api/v1/book/<int:book_id>', methods=['GET'])
 def api_book(book_id):
@@ -316,10 +345,17 @@ def api_comments(chapter_id):
 #post comment by chapter id
 @blueprint.route('/api/v1/comment', methods=['POST'])
 def api_comment_add():
-    comment = Comment(**request.form)
-    db.session.add(comment)
-    db.session.commit()
-    return jsonify({'status': 'success', 'msg': 'Comment added'})
+    try:
+        comment = Comment(
+        content = request.form.get('content'),
+        user_id = request.form.get('user_id'),
+        chapter_id = request.form.get('chapter_id')
+        )
+        db.session.add(comment)
+        db.session.commit()
+        return jsonify({'status': 'success', 'msg': 'Comment added'})
+    except:
+        return jsonify({'status': 'error', 'msg': 'Comment not added'})
 
 
 @blueprint.route('/api/v1/chapters/<int:book_id>', methods=['GET'])
