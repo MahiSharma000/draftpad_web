@@ -246,7 +246,7 @@ def api_book_add():
     )
     db.session.add(book)
     db.session.commit()
-    return jsonify({'status': 'success', 'msg': 'Book added'})
+    return jsonify({'status': 'success', 'msg': 'Book added', 'id': book.id})
 
 @blueprint.route('api/v1/chapter', methods=['POST'])
 def api_chapter_update():
