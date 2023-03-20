@@ -240,9 +240,11 @@ def api_profile_update():
 def api_book_add():
     book = Book(
         title=request.form['title'],
-        description=request.form['description'],
-        cover=request.form['cover'],
         user_id = request.form['user_id'],
+        cover=request.form['cover'],
+        description=request.form['description'],
+        
+        
     )
     db.session.add(book)
     db.session.commit()
@@ -257,11 +259,13 @@ def api_chapter_update():
             chapter.title = request.form['title']
             chapter.content = request.form['content']
             chapter.book_id = request.form['book_id']
+
+            chapter.category_id = request.form['category_id']
             chapter.user_id = request.form['user_id']
             chapter.status = request.form['status']
             chapter.total_comments = request.form['total_comments']
             chapter.total_likes = request.form['total_likes']
-            chapter.category_id = request.form['category_id']
+            
             db.session.commit()
             return jsonify({'status': 'OK'})
         else:
