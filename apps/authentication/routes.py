@@ -331,8 +331,7 @@ def api_author_profile(user_id):
 
 @blueprint.route('/api/v1/category/<int:category_id>', methods=['GET'])
 def api_category(category_id):
-    #get books by category id
-    books = Book.query.filter_by(category_id=category_id).all()
+    books = Book.query.filter_by(category_id=category_id).filter_by(status=1).all()
     if books:
         book_data = []
         for book in books:
@@ -497,3 +496,29 @@ def api_followers(user_id):
         return jsonify({'status': 'OK', 'followers': follower_data})
     return jsonify({'status': 'ERROR', 'followers': []})
 
+#get books by user_id and status
+@blueprint.route('/api/v1/books/<int:user_id>/<string:status>', methods=['GET'])
+def api_books(user_id, status):
+    books = Book.query.filter_by(user_id=user_id).filter_by(status=status).all()
+    if books:
+        book_data = []
+        for book in books:
+            user = Users.query.filter_by(id=book.user_id).first()
+            chapter_count = Chapter.query.filter_by(book_id=book.id).count()
+            book_data.append({
+                'id': book.id,
+                'cover': book.cover,
+                'title': book.title,
+                'user_id': book.user_id,
+                'username': user.username,
+                'status' :book.status,
+                'category_id': book.category_id,
+                'description': book.description,
+                'created_at': book.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_at': book.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'lang': book.lang,
+                'views': book.views,
+                'chapters': chapter_count
+            })
+        return jsonify({'status': 'OK', 'books': book_data})
+    return jsonify({'status': 'ERROR', 'books': []})
