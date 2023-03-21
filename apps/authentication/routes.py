@@ -500,6 +500,19 @@ def api_followers(user_id):
         return jsonify({'status': 'OK', 'followers': follower_data})
     return jsonify({'status': 'ERROR', 'followers': []})
 
+@blueprint.route('/api/v1/follower', methods=['POST'])
+def api_follower_add():
+    try:
+        follower = Follower(
+        user_id = request.form.get('user_id'),
+        follower_id = request.form.get('follower_id'),
+        )
+        db.session.add(follower)
+        db.session.commit()
+        return jsonify({'status': 'success', 'msg': 'Follower added'})
+    except:
+        return jsonify({'status': 'error', 'msg': 'Follower not added'})
+
 #get books by user_id and status
 @blueprint.route('/api/v1/books/<int:user_id>/<string:status>', methods=['GET'])
 def api_books(user_id, status):
