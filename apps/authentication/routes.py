@@ -191,7 +191,7 @@ def api_profile(user_id):
     return jsonify({'status': 'ERROR', 'profile': ''})
 
 def covert_str_to_date(date_str):
-    return datetime.strptime(date_str, '%d-%m-%Y')
+    return datetime .strptime(date_str, '%d-%m-%Y')
 
 @blueprint.route('/api/v1/profile', methods=['POST'])
 def api_profile_update():
