@@ -10,6 +10,7 @@ from flask_login import (
     logout_user
 )
 
+import stripe
 from apps import db, login_manager
 from apps.authentication import blueprint
 from apps.authentication.forms import LoginForm, CreateAccountForm
@@ -563,6 +564,79 @@ def api_profiles(name):
             })
         return jsonify({'status': 'OK', 'profiles': profile_data})
     return jsonify({'status': 'ERROR', 'profiles': []})
+
+#get books by name
+@blueprint.route('/api/v1/get_books/<string:name>', methods=['GET'])
+def api_get_books(name):
+    books = Book.query.filter(Book.title.like('%'+name+'%')).all()
+    if books:
+        book_data = []
+        for book in books:
+            user = Users.query.filter_by(id=book.user_id).first()
+            chapter_count = Chapter.query.filter_by(book_id=book.id).count()
+            book_data.append({
+                'id': book.id,
+                'cover': book.cover,
+                'title': book.title,
+                'user_id': book.user_id,
+                'username': user.username,
+                'status' :book.status,
+                'category_id': book.category_id,
+                'description': book.description,
+                'created_at': book.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_at': book.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'lang': book.lang,
+                'views': book.views,
+                'chapters': chapter_count
+            })
+        return jsonify({'status': 'OK', 'books': book_data})
+    return jsonify({'status': 'ERROR', 'books': []})
+
+#get reading list by name
+@blueprint.route('/api/v1/get_reading_list/<string:name>', methods=['GET'])
+def api_get_reading_list(name):
+    reading_list = ReadingList.query.filter(ReadingList.title.like('%'+name+'%')).all()
+    if reading_list:
+        reading_list_data = []
+        for reading in reading_list:
+            user = Users.query.filter_by(id=reading.user_id).first()
+            reading_list_data.append({
+                'id': reading.id,
+                'title': reading.title,
+                'user_id': reading.user_id,
+                'username': user.username,
+                'book_id': reading.book_id,
+                'chapter_id': reading.chapter_id,
+                'created_at': reading.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_at': reading.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+            })
+        return jsonify({'status': 'OK', 'reading_list': reading_list_data})
+    return jsonify({'status': 'ERROR', 'reading_list': []})
+
+# add a stripe payment endpoint
+@blueprint.route('/api/v1/create-checkout-session', methods=['POST'])
+def create_checkout_session():
+    stripe.api_key = 'sk_test_51MolceSCy9vRZRqu8jDVMA76vGEI4aOV3p6XPQKTL0TJAv5eWSeqsHBB8GgVhKNwawukzBHKekYCnSQ2Ai6cIE5I00A8iB6eNe'
+    # Use an existing Customer ID if this is a returning customer
+    customer = stripe.Customer.create()
+    ephemeralKey = stripe.EphemeralKey.create(
+        customer=customer['id'],
+        stripe_version='2022-11-15',
+    )
+    paymentIntent = stripe.PaymentIntent.create(
+        amount=190,
+        currency='inr',
+        customer=customer['id'],
+        automatic_payment_methods={
+        'enabled': True,
+        },
+    )
+    return jsonify(paymentIntent=paymentIntent.client_secret,
+                    ephemeralKey=ephemeralKey.secret,
+                    customer=customer.id,
+                    publishableKey='pk_test_51MolceSCy9vRZRquZEq0mR1RoGp42VtBxlq3GlasZsgytqxQQANkXfrnTtipiwplDTw3qVBy0TzuPmOhRlYeWOF500PQ0pCriT')
+
+
 
            
                           
