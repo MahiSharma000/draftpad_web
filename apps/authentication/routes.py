@@ -293,12 +293,6 @@ def api_categories():
         return jsonify({'status': 'OK', 'categories': [category.to_json() for category in categories]})
     return jsonify({'status': 'ERROR', 'categories': ''})
 
-@blueprint.route('/api/v1/profile/<int:user_id>', methods=['GET'])
-def api_get_profile(user_id):
-    profile = Profile.query.filter_by(user_id=user_id).first()
-    if profile:
-        return jsonify({'status': 'OK', 'profile': profile.to_json()})
-    return jsonify({'status': 'ERROR', 'profile': ''})
 
 @blueprint.route('/api/v1/get_profile/<int:user_id>', methods=['GET'])
 def api_author_profile(user_id):
@@ -411,6 +405,7 @@ def api_comments(chapter_id):
                 'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
                 'updated_at': comment.updated_at.strftime('%Y-%m-%d %H:%M:%S')
             })
+        comment_data.sort(key=lambda x: x['id'], reverse=True)
         return jsonify({'status': 'OK', 'comments': comment_data})
     return jsonify({'status': 'ERROR', 'comments': []})
 
@@ -539,6 +534,35 @@ def api_books(user_id, status):
             })
         return jsonify({'status': 'OK', 'books': book_data})
     return jsonify({'status': 'ERROR', 'books': []})
+
+#get profiles by name
+@blueprint.route('/api/v1/profiles/<string:name>', methods=['GET'])
+def api_profiles(name):
+    profiles = Users.query.filter(Users.username.like('%'+name+'%')).all()
+    if profiles:
+        profile_data = []
+        for profile in profiles:
+            user = Users.query.filter_by(id=profile.user_id).first()
+            profile_data.append({
+                'id': profile.id,
+                'user_id': profile.user_id,
+                'username': user.username,
+                'first_name': profile.first_name,
+                'last_name': profile.last_name,
+                'about': profile.about,
+                'profile_pic': profile.profile_pic,
+                'book_written': profile.book_written,
+                'followers': profile.followers,
+                'following': profile.following,
+                'is_premium': profile.is_premium,
+                'books_read': profile.books_read,
+                'dob': profile.dob,
+                'phone': profile.phone,
+                'created_at': profile.created_at,
+                'updated_at': profile.updated_at,
+            })
+        return jsonify({'status': 'OK', 'profiles': profile_data})
+    return jsonify({'status': 'ERROR', 'profiles': []})
 
            
                           
