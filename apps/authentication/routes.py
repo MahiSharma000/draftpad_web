@@ -537,11 +537,12 @@ def api_books(user_id, status):
     return jsonify({'status': 'ERROR', 'books': []})
 
 #get profiles by name
-@blueprint.route('/api/v1/profiles/<string:name>', methods=['GET'])
-def api_profiles(name):
-    profiles = Users.query.filter(Users.username.like('%'+name+'%')).all()
+@blueprint.route('/api/v1/get_profiles/<string:name>', methods=['GET'])
+def api_get_profiles(name):
+    profiles = Profile.query.filter(Profile.first_name.like(name+'%')).all()
     if profiles:
         profile_data = []
+        
         for profile in profiles:
             user = Users.query.filter_by(id=profile.user_id).first()
             profile_data.append({
@@ -624,7 +625,7 @@ def create_checkout_session():
         stripe_version='2022-11-15',
     )
     paymentIntent = stripe.PaymentIntent.create(
-        amount=190,
+        amount=1,
         currency='inr',
         customer=customer['id'],
         automatic_payment_methods={
