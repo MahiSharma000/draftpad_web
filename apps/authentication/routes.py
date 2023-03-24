@@ -508,6 +508,19 @@ def api_follower_add():
         return jsonify({'status': 'success', 'msg': 'Follower added'})
     except:
         return jsonify({'status': 'error', 'msg': 'Follower not added'})
+    
+@blueprint.route('/api/v1/download', methods=['POST'])
+def api_download_add():
+    try:
+        download = Download(
+        user_id = request.form.get('user_id'),
+        book_id = request.form.get('book_id'),
+        )
+        db.session.add(download)
+        db.session.commit()
+        return jsonify({'status': 'success', 'msg': ' Book Download '})
+    except:
+        return jsonify({'status': 'error', 'msg': 'Book not Download'})
 
 #get books by user_id and status
 @blueprint.route('/api/v1/books/<int:user_id>/<string:status>', methods=['GET'])
@@ -613,6 +626,7 @@ def api_get_reading_list(name):
             })
         return jsonify({'status': 'OK', 'reading_list': reading_list_data})
     return jsonify({'status': 'ERROR', 'reading_list': []})
+
 
 # add a stripe payment endpoint
 @blueprint.route('/api/v1/create-checkout-session', methods=['POST'])
