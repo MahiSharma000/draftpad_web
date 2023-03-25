@@ -244,6 +244,7 @@ def api_book_add():
         user_id = request.form['user_id'],
         cover=request.form['cover'],
         description=request.form['description'],
+        category_id=request.form['category_id'],
         
         
     )
@@ -558,24 +559,25 @@ def api_get_profiles(name):
         
         for profile in profiles:
             user = Users.query.filter_by(id=profile.user_id).first()
-            profile_data.append({
-                'id': profile.id,
-                'user_id': profile.user_id,
-                'username': user.username,
-                'first_name': profile.first_name,
-                'last_name': profile.last_name,
-                'about': profile.about,
-                'profile_pic': profile.profile_pic,
-                'book_written': profile.book_written,
-                'followers': profile.followers,
-                'following': profile.following,
-                'is_premium': profile.is_premium,
-                'books_read': profile.books_read,
-                'dob': profile.dob,
-                'phone': profile.phone,
-                'created_at': profile.created_at,
-                'updated_at': profile.updated_at,
-            })
+            if user is not None:
+                profile_data.append({
+                    'id': profile.id,
+                    'user_id': profile.user_id,
+                    'username': user.username,
+                    'first_name': profile.first_name,
+                    'last_name': profile.last_name,
+                    'about': profile.about,
+                    'profile_pic': profile.profile_pic,
+                    'book_written': profile.book_written,
+                    'followers': profile.followers,
+                    'following': profile.following,
+                    'is_premium': profile.is_premium,
+                    'books_read': profile.books_read,
+                    'dob': profile.dob,
+                    'phone': profile.phone,
+                    'created_at': profile.created_at,
+                    'updated_at': profile.updated_at,
+                })
         return jsonify({'status': 'OK', 'profiles': profile_data})
     return jsonify({'status': 'ERROR', 'profiles': []})
 
@@ -651,7 +653,7 @@ def create_checkout_session():
                     customer=customer.id,
                     publishableKey='pk_test_51MolceSCy9vRZRquZEq0mR1RoGp42VtBxlq3GlasZsgytqxQQANkXfrnTtipiwplDTw3qVBy0TzuPmOhRlYeWOF500PQ0pCriT')
 
-
+#
 
            
                           
