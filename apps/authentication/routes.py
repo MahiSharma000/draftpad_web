@@ -245,8 +245,6 @@ def api_book_add():
         cover=request.form['cover'],
         description=request.form['description'],
         category_id=request.form['category_id'],
-        
-        
     )
     db.session.add(book)
     db.session.commit()
