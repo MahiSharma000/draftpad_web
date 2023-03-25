@@ -239,16 +239,27 @@ def api_profile_update():
 
 @blueprint.route('/api/v1/book', methods=['POST'])
 def api_book_add():
-    book = Book(
-        title=request.form['title'],
-        user_id = request.form['user_id'],
-        cover=request.form['cover'],
-        description=request.form['description'],
-        category_id=request.form['category_id'],
-    )
-    db.session.add(book)
-    db.session.commit()
-    return jsonify({'status': 'success', 'msg': 'Book added', 'id': book.id})
+    book = Book.query.filter_by(title=request.form['title']).filter_by(user_id = request.form['user_id']).first()
+    if book:
+        book.title = request.form['title']
+        book.user_id = request.form['user_id']
+        book.cover = request.form['cover']
+        book.description = request.form['description']
+        book.category_id = request.form['category_id']
+        db.session.commit()
+        return jsonify({'status': 'success', 'msg': 'Book updated', 'id': book.id})
+    else:
+        book = Book(
+            title=request.form['title'],
+            user_id = request.form['user_id'],
+            cover=request.form['cover'],
+            description=request.form['description'],
+            category_id=request.form['category_id'],
+        )
+        db.session.add(book)
+        db.session.commit()
+        return jsonify({'status': 'success', 'msg': 'Book added', 'id': book.id})
+    
 
 @blueprint.route('api/v1/chapter', methods=['POST'])
 def api_chapter_update():
