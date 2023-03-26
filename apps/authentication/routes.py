@@ -407,6 +407,7 @@ def api_comments(chapter_id):
         comment_data= []
         for comment in comments:
             user = Users.query.filter_by(id=comment.user_id).first()
+            profile = Profile.query.filter_by(user_id=user.id).first()
             comment_data.append({
                 'id': comment.id,
                 'user_id': comment.user_id,
@@ -414,7 +415,8 @@ def api_comments(chapter_id):
                 'chapter_id': comment.chapter_id,
                 'content': comment.content,
                 'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                'updated_at': comment.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+                'updated_at': comment.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'profile_pic': profile.profile_pic,
             })
         comment_data.sort(key=lambda x: x['id'], reverse=True)
         return jsonify({'status': 'OK', 'comments': comment_data})
@@ -424,6 +426,7 @@ def api_comments(chapter_id):
 @blueprint.route('/api/v1/comment', methods=['POST'])
 def api_comment_add():
     try:
+        profile = Profile.query.filter_by(user_id=request.form.get('user_id')).first()
         comment = Comment(
         content = request.form.get('content'),
         user_id = request.form.get('user_id'),
