@@ -271,7 +271,6 @@ def api_chapter_update():
             chapter.title = request.form['title']
             chapter.content = request.form['content']
             chapter.book_id = request.form['book_id']
-
             chapter.category_id = request.form['category_id']
             chapter.user_id = request.form['user_id']
             chapter.status = request.form['status']
@@ -706,6 +705,21 @@ def api_get_books_with_max_views():
             book_data.sort(key=lambda x: x['views'], reverse=True)
         return jsonify({'status': 'OK', 'books': book_data})
     return jsonify({'status': 'ERROR', 'books': []})
+
+#post report
+@blueprint.route('/api/v1/report', methods=['POST'])
+def api_report():
+    data = request.get_json()
+    report = Report(
+        user_id=data['user_id'],
+        book_id=data['book_id'],
+        report=data['report'],
+        reportType=data['reportType'],
+        reportReason=data['reportReason'],
+    )
+    db.session.add(report)
+    db.session.commit()
+    return jsonify({'status': 'OK', 'message': 'Reported successfully'})
            
                           
 
