@@ -243,7 +243,7 @@ def api_book_add():
     if book:
         book.title = request.form['title']
         book.user_id = request.form['user_id']
-        book.cover = request.form['cover']
+        book.status = request.form['status']
         book.description = request.form['description']
         book.category_id = request.form['category_id']
         db.session.commit()
