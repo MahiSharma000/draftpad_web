@@ -662,8 +662,48 @@ def create_checkout_session():
                     customer=customer.id,
                     publishableKey='pk_test_51MolceSCy9vRZRquZEq0mR1RoGp42VtBxlq3GlasZsgytqxQQANkXfrnTtipiwplDTw3qVBy0TzuPmOhRlYeWOF500PQ0pCriT')
 
-#
+#change password 
+@blueprint.route('/api/v1/change_password', methods=['POST'])
+def api_change_password():
+    user_id = request.form.get('user_id')
+    data = request.get_json()
+    user = Users.query.filter_by(id=user_id).first()
+    old_password = request.form.get('old_password')
+    if user is not None:
+        if (old_password==user.password):
+            user.password = request.form.get('new_password')
+            db.session.commit()
+            return jsonify({'status': 'OK', 'message': 'Password changed successfully'})
+        return jsonify({'status': 'ERROR', 'message': 'Old password is incorrect'})
+    return jsonify({'status': 'ERROR', 'message': 'User not found'})
 
+#get books with max views whose status is published
+@blueprint.route('/api/v1/get_books_max_views', methods=['GET'])
+def api_get_books_with_max_views():
+    books = Book.query.filter_by(status=1).limit(50).all()
+    if books:
+        book_data = []
+        for book in books:
+            user = Users.query.filter_by(id=book.user_id).first()
+            chapter_count = Chapter.query.filter_by(book_id=book.id).count()
+            book_data.append({
+                'id': book.id,
+                'cover': book.cover,
+                'title': book.title,
+                'user_id': book.user_id,
+                'username': user.username,
+                'status' :book.status,
+                'category_id': book.category_id,
+                'description': book.description,
+                'created_at': book.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_at': book.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'lang': book.lang,
+                'views': book.views,
+                'chapters': chapter_count
+            })
+            book_data.sort(key=lambda x: x['views'], reverse=True)
+        return jsonify({'status': 'OK', 'books': book_data})
+    return jsonify({'status': 'ERROR', 'books': []})
            
                           
 
