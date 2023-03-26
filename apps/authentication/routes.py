@@ -246,6 +246,7 @@ def api_book_add():
         book.status = request.form['status']
         book.description = request.form['description']
         book.category_id = request.form['category_id']
+        book.status=request.form['status']
         db.session.commit()
         return jsonify({'status': 'success', 'msg': 'Book updated', 'id': book.id})
     else:
@@ -646,6 +647,7 @@ def api_get_reading_list(name):
 @blueprint.route('/api/v1/create-checkout-session', methods=['POST'])
 def create_checkout_session():
     stripe.api_key = 'sk_test_51MolceSCy9vRZRqu8jDVMA76vGEI4aOV3p6XPQKTL0TJAv5eWSeqsHBB8GgVhKNwawukzBHKekYCnSQ2Ai6cIE5I00A8iB6eNe'
+
     # Use an existing Customer ID if this is a returning customer
     customer = stripe.Customer.create()
     ephemeralKey = stripe.EphemeralKey.create(
