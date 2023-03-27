@@ -323,7 +323,7 @@
                                     <div class="d-flex">
                                       <a href="" class="btn btn-primary btn-sm text-white me-1">View</a>
                                       <a href="" class="btn btn-primary btn-sm text-white me-1">Edit</a>
-                                      <a href="" class="btn btn-primary btn-sm text-white me-1">Delete</a>
+                                      <a href="/book/{{book.id}}/action/delete" class="btn btn-primary btn-sm text-white me-1">Delete</a>
                                     </div>
                                   </td>
                                   
@@ -393,10 +393,8 @@
                                   </td>
                                   <td>
                                     <div class="d-flex ">
-                                      <img src="https://th.bing.com/th/id/OIP.TctatNGs7RN-Dfc3NZf91AAAAA?pid=ImgDet&rs=1" alt="">
                                       <div>
-                                        <h6>{{comment.comment}}</h6>
-                                        <p>username</p>
+                                        <h6>{{comment.content}}</h6>
                                       </div>
                                     </div>
                                   </td>
@@ -488,7 +486,6 @@
                                   </td>
                                   <td>
                                     <div class="d-flex ">
-                                      <img src="https://th.bing.com/th/id/OIP.TctatNGs7RN-Dfc3NZf91AAAAA?pid=ImgDet&rs=1" alt="">
                                       <div>
                                         <h6>{{report.user}}</h6>
                                       </div>
@@ -505,7 +502,7 @@
                                     <h6>{{report.report_type}}</h6>
                                   </td>
                                   <td>
-                                    <h6>{{report.reason}}</h6>
+                                    <h6>{{report.report_reason}}</h6>
                                   </td>
                                   <td>
                                     <h6>{{report.created_on}}</h6>

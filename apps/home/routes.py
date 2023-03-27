@@ -89,6 +89,13 @@ def userDelete(id):
     db.session.commit()
     return redirect('/admin/users')
 
+@blueprint.route('/book/<int:id>/action/delete')
+def bookDelete(id):
+    book=Book.query.get(id)
+    db.session.delete(book)
+    db.session.commit()
+    return redirect('/admin/books')
+
 @blueprint.route('/admin/categories')
 def admin_categories():
     categories = Category.query.all()
@@ -110,6 +117,7 @@ def categoryDelete(id):
 def admin_books():
     books = Book.query.all()
     return render_template('home/bookDetails.html', books=books)
+
 
 @blueprint.route('/admin/book/<int:id>')
 def bookDetails(id):
