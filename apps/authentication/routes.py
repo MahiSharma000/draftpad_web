@@ -712,13 +712,11 @@ def api_get_books_with_max_views():
 #post report
 @blueprint.route('/api/v1/report', methods=['POST'])
 def api_report():
-    data = request.get_json()
     report = Report(
-        user_id=data['user_id'],
-        book_id=data['book_id'],
-        report=data['report'],
-        reportType=data['reportType'],
-        reportReason=data['reportReason'],
+        user_id=request.form.get('user_id'),
+        book_id=request.form.get('book_id'),
+        report_type=request.form.get('report_type'),
+        report_reason=request.form.get('report_reason'),
     )
     db.session.add(report)
     db.session.commit()
