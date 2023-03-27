@@ -267,7 +267,7 @@ def api_chapter_update():
     book_id = request.form['book_id']
     if book_id:
         #get chapter by id 
-        chapter = Chapter.query.filter_by(title = request.form['title']).filter_by(user_id=request.form['user_id']).first()
+        chapter = Chapter.query.filter_by(id=request.form['id']).first()
         if chapter:
             chapter.title = request.form['title']
             chapter.content = request.form['content']
@@ -722,6 +722,7 @@ def api_report():
     db.session.add(report)
     db.session.commit()
     return jsonify({'status': 'OK', 'message': 'Reported successfully'})
+
            
                           
 
