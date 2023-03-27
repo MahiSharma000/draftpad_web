@@ -266,7 +266,8 @@ def api_book_add():
 def api_chapter_update():
     book_id = request.form['book_id']
     if book_id:
-        chapter= Chapter.query.filter_by(title = request.form['title']).filter_by(user_id= request.form['user_id']).first()
+        #get chapter by id 
+        chapter = Chapter.query.filter_by(title = request.form['title']).filter_by(user_id=request.form['user_id']).first()
         if chapter:
             chapter.title = request.form['title']
             chapter.content = request.form['content']
