@@ -239,7 +239,7 @@ def api_profile_update():
 
 @blueprint.route('/api/v1/book', methods=['POST'])
 def api_book_add():
-    book = Book.query.filter_by(title=request.form['title']).filter_by(user_id = request.form['user_id']).first()
+    book = Book.query.filter_by(id = request.form['id']).first()
     if book:
         book.title = request.form['title']
         book.user_id = request.form['user_id']
@@ -733,6 +733,42 @@ def api_update_comment():
         return jsonify({'status': 'OK'})
     return jsonify({'status': 'ERROR'})
 
+#check the user has liked the chapter
+@blueprint.route('/api/v1/check_like', methods=['POST'])
+def api_check_like():
+    chapter_id = request.form['chapter_id']
+    user_id = request.form['user_id']
+    like = LikedChapter.query.filter_by(chapter_id=chapter_id).filter_by(user_id=user_id).first()
+    if like is not None:
+        db.session.commit()
+        return jsonify({'status': 'OK'})
+    
+    return jsonify({'status': 'ERROR'})
+
+#add likes to chapter
+@blueprint.route('/api/v1/add_like', methods=['POST'])
+def api_add_like():
+    chapter_id = request.form['chapter_id']
+    user_id = request.form['user_id']
+    like = LikedChapter(
+        chapter_id=chapter_id,
+        user_id=user_id,
+    )
+    db.session.add(like)
+    db.session.commit()
+    return jsonify({'status': 'OK'})
+
+#delete like from chapter
+@blueprint.route('/api/v1/delete_like', methods=['POST'])
+def api_delete_like():
+    chapter_id = request.form['chapter_id']
+    user_id = request.form['user_id']
+    like = LikedChapter.query.filter_by(chapter_id=chapter_id).filter_by(user_id=user_id).first()
+    if like is not None:
+        db.session.delete(like)
+        db.session.commit()
+        return jsonify({'status': 'OK'})
+    return jsonify({'status': 'ERROR'})
            
                           
 
