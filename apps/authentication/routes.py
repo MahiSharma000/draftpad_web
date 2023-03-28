@@ -722,6 +722,16 @@ def api_report():
     db.session.add(report)
     db.session.commit()
     return jsonify({'status': 'OK', 'message': 'Reported successfully'})
+ #update  number of comments in chapter table 
+@blueprint.route('/api/v1/update_comment', methods=['POST'])
+def api_update_comment():
+    chapter_id = request.form['id']
+    chapter = Chapter.query.filter_by(id=chapter_id).first()
+    if chapter is not None:
+        chapter.total_comments = chapter.total_comments + 1
+        db.session.commit()
+        return jsonify({'status': 'OK'})
+    return jsonify({'status': 'ERROR'})
 
            
                           
