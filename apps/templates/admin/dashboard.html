@@ -415,7 +415,7 @@
                                     <div class="d-flex">
                                       <a href="" class="btn btn-primary btn-sm text-white me-1">View</a>
                                       <a href="" class="btn btn-primary btn-sm text-white me-1">Edit</a>
-                                      <a href="" class="btn btn-primary btn-sm text-white me-1">Delete</a>
+                                      <a href="/comment/{{comment.id}}/action/delete" class="btn btn-primary btn-sm text-white me-1">Delete</a>
                                     </div>
                                   </td>
                                 </tr>
@@ -467,10 +467,9 @@
                                     </div>
                                   </th>
                                   <th>User</th>
-                                  <th>Chapter</th>
                                   <th>Book</th>
                                   <th>Report Type</th>
-                                  <th>Reason for Report</th>
+                                  <th>Report Reason</th>
                                   <th>Reported On</th>
                                   <th>Actions</th>
                                 </tr>
@@ -493,9 +492,6 @@
                                     </div>
                                   </td>
                                   <td>
-                                    <h6>{{report.chapter}}</h6>
-                                  </td>
-                                  <td>
                                     <h6>{{report.book}}</h6>
                                   </td>
                                   <td>
@@ -511,7 +507,7 @@
                                     <div class="d-flex">
                                       <a href="" class="btn btn-primary btn-sm text-white me-1">View</a>
                                       <a href="" class="btn btn-primary btn-sm text-white me-1">Edit</a>
-                                      <a href="" class="btn btn-primary btn-sm text-white me-1">Delete</a>
+                                      <a href="/report/{{report.id}}/action/delete " class="btn btn-primary btn-sm text-white me-1">Delete</a>
                                     </div>
                                   </td>
                                 </tr>

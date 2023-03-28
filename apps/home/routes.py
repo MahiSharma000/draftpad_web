@@ -134,10 +134,24 @@ def commentDetails(id):
     comment = Comment.query.get(id)
     return render_template('home/comments_id.html', comment=comment)
 
+@blueprint.route('/comment/<int:id>/action/delete')
+def commentDelete(id):
+    comment = Comment.query.get(id)
+    db.session.delete(comment)
+    db.session.commit()
+    return redirect('/admin/comments')
+
 @blueprint.route('/admin/reports')
 def admin_reports():
     reports = Report.query.all()
     return render_template('home/report.html', reports=reports)
+
+@blueprint.route('/report/<int:id>/action/delete')
+def reportDelete(id):
+    report = Report.query.get(id)
+    db.session.delete(report)
+    db.session.commit()
+    return redirect('/admin/reports')
 
 @blueprint.route('/admin/report/<int:id>')
 def reportDetails(id):
