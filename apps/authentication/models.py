@@ -422,4 +422,56 @@ class Report(db.Model):
     def __repr__(self):
         return str(self.user_id)
 
+#table for blocked users
+class BlockedUser(db.Model):
+    __tablename__ = 'BlockedUsers'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
+    blocked_user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        print('BlockedUser saved')
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+        print('BlockedUser deleted')
+
+    def update(self):
+        db.session.commit()
+        print('BlockedUser updated')
+
+    def __repr__(self):
+        return str(self.user_id)
+    
+#table for liked chapters
+class LikedChapter(db.Model):
+    __tablename__ = 'LikedChapters'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
+    chapter_id = db.Column(db.Integer, db.ForeignKey('Chapter.id'))
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        print('LikedChapter saved')
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+        print('LikedChapter deleted')
+
+    def update(self):
+        db.session.commit()
+        print('LikedChapter updated')
+
+    def __repr__(self):
+        return str(self.user_id)
+
 
