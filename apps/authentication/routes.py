@@ -243,6 +243,7 @@ def api_book_add():
     if book:
         book.title = request.form['title']
         book.user_id = request.form['user_id']
+        book.cover = request.form['cover']
         book.status = request.form['status']
         book.description = request.form['description']
         book.category_id = request.form['category_id']
@@ -685,7 +686,7 @@ def api_change_password():
 #get books with max views whose status is published
 @blueprint.route('/api/v1/get_books_max_views', methods=['GET'])
 def api_get_books_with_max_views():
-    books = Book.query.filter_by(status=1).limit(50).all()
+    books = Book.query.filter_by(status=1).limit(10).all()
     if books:
         book_data = []
         for book in books:
