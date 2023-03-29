@@ -647,7 +647,7 @@ def api_get_reading_list(name):
 # add a stripe payment endpoint
 @blueprint.route('/api/v1/create-checkout-session', methods=['POST'])
 def create_checkout_session():
-    stripe.api_key = 'sk_test_51MolceSCy9vRZRqu8jDVMA76vGEI4aOV3p6XPQKTL0TJAv5eWSeqsHBB8GgVhKNwawukzBHKekYCnSQ2Ai6cIE5I00A8iB6eNe'
+    stripe.api_key = 'sk_test_51MqsCESCz8rZMjh8Kwew9NTEiBpxHqEQ9xaqITnSYty7NIsPT831jc46picJ7vjMrqjD0cjy9IPqJikqOVi6i46e00Ko8jRijT'
 
     # Use an existing Customer ID if this is a returning customer
     customer = stripe.Customer.create()
@@ -666,7 +666,7 @@ def create_checkout_session():
     return jsonify(paymentIntent=paymentIntent.client_secret,
                     ephemeralKey=ephemeralKey.secret,
                     customer=customer.id,
-                    publishableKey='pk_test_51MolceSCy9vRZRquZEq0mR1RoGp42VtBxlq3GlasZsgytqxQQANkXfrnTtipiwplDTw3qVBy0TzuPmOhRlYeWOF500PQ0pCriT')
+                    publishableKey='pk_test_51MqsCESCz8rZMjh8kM2ElCXyKd8L4HIE3zhVAASQELg8ZLwVYpserzPdxOt5YHAy4FBp33TBH5rMgGKX42m0mcQE004Buf8yVW')
 
 #change password 
 @blueprint.route('/api/v1/change_password', methods=['POST'])
