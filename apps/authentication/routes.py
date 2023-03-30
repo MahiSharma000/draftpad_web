@@ -771,6 +771,16 @@ def api_delete_like():
         return jsonify({'status': 'OK'})
     return jsonify({'status': 'ERROR'})
 
+#update status of book by id
+@blueprint.route('/api/v1/update_status', methods=['POST'])
+def api_update_status():
+    book_id = request.form['id']
+    book = Book.query.filter_by(id=book_id).first()
+    if book is not None:
+        book.status = 1
+        db.session.commit()
+        return jsonify({'status': 'OK'})
+    return jsonify({'status': 'ERROR'})
 
            
                           
