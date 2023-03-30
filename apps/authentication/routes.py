@@ -782,6 +782,14 @@ def api_update_status():
         return jsonify({'status': 'OK'})
     return jsonify({'status': 'ERROR'})
 
+#get category by id
+@blueprint.route('/api/v1/get_category/<int:category_id>', methods=['GET'])
+def api_get_category(category_id):
+    category = Category.query.filter_by(id=category_id).first()
+    if category is not None:
+        return jsonify({'status': 'OK', 'category': category.name})
+    return jsonify({'status': 'ERROR', 'category': ''})
+
            
                           
 
