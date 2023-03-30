@@ -239,7 +239,7 @@ def api_profile_update():
 
 @blueprint.route('/api/v1/book', methods=['POST'])
 def api_book_add():
-    book = Book.query.filter_by(id = request.form['id']).first()
+    book = Book.query.filter_by(id = request.form['idup']).first()
     if book:
         book.title = request.form['title']
         book.user_id = request.form['user_id']
