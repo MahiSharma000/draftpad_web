@@ -772,6 +772,19 @@ def api_get_category(category_id):
         return jsonify({'status': 'OK', 'category': category.name})
     return jsonify({'status': 'ERROR', 'category': ''})
 
+<<<<<<< HEAD
+#post reading list
+@blueprint.route('/api/v1/reading_list', methods=['POST'])
+def api_reading_list():
+    reading_list = ReadingList(
+        name="NULL",
+        user_id=request.form.get('user_id'),
+        book_id=request.form.get('book_id'),
+    )
+    db.session.add(reading_list)
+    db.session.commit()
+    return jsonify({'status': 'OK', 'message': 'Added to reading list successfully'})
+=======
 #update number of views in book table
 @blueprint.route('/api/v1/update_views', methods=['POST'])
 def api_update_views():
@@ -828,6 +841,7 @@ def api_add_reading_later():
     db.session.add(reading_list)
     db.session.commit()
     return jsonify({'status': 'OK'})
+>>>>>>> bdce3fcf5de80a378d1c58982c9ec9fba229803b
 
 #check the user is following the author
 @blueprint.route('/api/v1/check_follow', methods=['POST'])
