@@ -492,25 +492,6 @@ def api_chapter(chapter_id):
 
 
 
-#get the followers of a user
-@blueprint.route('/api/v1/followers/<int:user_id>', methods=['GET'])
-def api_followers(user_id):
-    followers = Follower.query.filter_by(user_id=user_id).all()
-    if followers:
-        follower_data = []
-        for follower in followers:
-            user = Users.query.filter_by(id=follower.follower_id).first()
-            follower_data.append({
-                'id': follower.id,
-                'user_id': follower.user_id,
-                'follower_id': follower.follower_id,
-                'username': user.username,
-                'created_at': follower.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                'updated_at': follower.updated_at.strftime('%Y-%m-%d %H:%M:%S')
-            })
-        return jsonify({'status': 'OK', 'followers': follower_data})
-    return jsonify({'status': 'ERROR', 'followers': []})
-
 @blueprint.route('/api/v1/follower', methods=['POST'])
 def api_follower_add():
     try:
@@ -723,6 +704,7 @@ def api_report():
     db.session.add(report)
     db.session.commit()
     return jsonify({'status': 'OK', 'message': 'Reported successfully'})
+
  #update  number of comments in chapter table 
 @blueprint.route('/api/v1/update_comment', methods=['POST'])
 def api_update_comment():
@@ -790,6 +772,7 @@ def api_get_category(category_id):
         return jsonify({'status': 'OK', 'category': category.name})
     return jsonify({'status': 'ERROR', 'category': ''})
 
+<<<<<<< HEAD
 #post reading list
 @blueprint.route('/api/v1/reading_list', methods=['POST'])
 def api_reading_list():
@@ -801,6 +784,61 @@ def api_reading_list():
     db.session.add(reading_list)
     db.session.commit()
     return jsonify({'status': 'OK', 'message': 'Added to reading list successfully'})
+=======
+#update number of views in book table
+@blueprint.route('/api/v1/update_views', methods=['POST'])
+def api_update_views():
+    book_id = request.form['id']
+    book = Book.query.filter_by(id=book_id).first()
+    if book is not None:
+        book.views = book.views + 1
+        db.session.commit()
+        return jsonify({'status': 'OK'})
+    return jsonify({'status': 'ERROR'})
+
+#get followers of user
+@blueprint.route('/api/v1/get_followers/<int:user_id>', methods=['GET'])
+def api_get_followers(user_id):
+    followers = Follower.query.filter_by(user_id=user_id).all()
+    if followers:
+        follower_data = []
+        for follower in followers:
+            profile = Profile.query.filter_by(user_id=follower.follower_id).first()
+            user = Users.query.filter_by(id=follower.follower_id).first()
+            follower_data.append({
+                'id': user.id,
+                'username': user.username,
+                'first_name': profile.first_name,
+                'last_name': profile.last_name,
+                'about': profile.about,
+                'profile_pic': profile.profile_pic,
+                'book_written': profile.book_written,
+                'followers': profile.followers,
+                'following': profile.following,
+                'is_premium': profile.is_premium,
+                'books_read': profile.books_read,
+                'dob': profile.dob,
+                'phone': profile.phone,
+                'created_at': user.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_at': user.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+                
+            })
+        return jsonify({'status': 'OK', 'followers': follower_data})
+    return jsonify({'status': 'ERROR', 'followers': []})
+
+#add book in reading list
+@blueprint.route('/api/v1/add_reading_later', methods=['POST'])
+def api_add_reading_later():
+    book_id = request.form['book_id']
+    user_id = request.form['user_id']
+    reading_list = ReadingList(
+        book_id=book_id,
+        user_id=user_id,
+    )
+    db.session.add(reading_list)
+    db.session.commit()
+    return jsonify({'status': 'OK'})
+>>>>>>> bdce3fcf5de80a378d1c58982c9ec9fba229803b
 
            
                           
