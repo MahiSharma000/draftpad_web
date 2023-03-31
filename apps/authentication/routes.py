@@ -323,7 +323,7 @@ def api_author_profile(user_id):
                 'last_name': profile.last_name,
                 'about': profile.about,
                 'profile_pic': profile.profile_pic,
-                'book_written': profile.book_written,
+                'book_written':profile.book_written,
                 'followers': profile.followers,
                 'following': profile.following,
                 'is_premium': profile.is_premium,
@@ -794,18 +794,22 @@ def api_update_views():
         return jsonify({'status': 'OK'})
     return jsonify({'status': 'ERROR'})
 
-#get followers of user
+#get followers of author
 @blueprint.route('/api/v1/get_followers/<int:user_id>', methods=['GET'])
 def api_get_followers(user_id):
-    followers = Follower.query.filter_by(user_id=user_id).all()
-    if followers:
+    #get followers of author
+    followers = Follower.query.filter_by(follower_id=user_id).all()
+    if followers is not None:
         follower_data = []
         for follower in followers:
-            profile = Profile.query.filter_by(user_id=follower.follower_id).first()
-            user = Users.query.filter_by(id=follower.follower_id).first()
+            #get data of follower
+            user = Users.query.filter_by(id=follower.user_id).first()
+            profile = Profile.query.filter_by(user_id=follower.user_id).first()
             follower_data.append({
                 'id': user.id,
+                'user_id': profile.user_id,
                 'username': user.username,
+                'email': user.email,
                 'first_name': profile.first_name,
                 'last_name': profile.last_name,
                 'about': profile.about,
@@ -817,9 +821,8 @@ def api_get_followers(user_id):
                 'books_read': profile.books_read,
                 'dob': profile.dob,
                 'phone': profile.phone,
-                'created_at': user.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                'updated_at': user.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
-                
+                'created_at': profile.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_at': profile.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
             })
         return jsonify({'status': 'OK', 'followers': follower_data})
     return jsonify({'status': 'ERROR', 'followers': []})
@@ -837,6 +840,18 @@ def api_add_reading_later():
     db.session.commit()
     return jsonify({'status': 'OK'})
 
+
+#check the user is following the author
+@blueprint.route('/api/v1/check_follow', methods=['POST'])
+def api_check_follow():
+    user_id = request.form['user_id']
+    follower_id = request.form['follower_id']
+    follow = Follower.query.filter_by(user_id=user_id).filter_by(follower_id=follower_id).first()
+    if follow is not None:
+        db.session.commit()
+        return jsonify({'status': 'OK'})
+    
+    return jsonify({'status': 'ERROR'})
 
            
                           
