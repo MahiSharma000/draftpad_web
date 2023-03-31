@@ -84,7 +84,7 @@
                     <td>
                       <div class="d-flex">
                         <a href="{{config.APP_ROOT}}/admin/comments/{{comment.id}}/edit" class="btn btn-primary btn-sm text-white">Edit</a>
-                        <form action="{{config.APP_ROOT}}/admin/comments/{{comment.id}}/delete" method="post">
+                        <form action="/comments/{{comment.id}}/action/delete" method="post">
                           <button type="submit" class="btn btn-danger btn-sm text-white">Delete</button>
                         </form>
                       </div>
