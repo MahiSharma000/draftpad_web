@@ -704,6 +704,7 @@ def api_report():
     db.session.add(report)
     db.session.commit()
     return jsonify({'status': 'OK', 'message': 'Reported successfully'})
+
  #update  number of comments in chapter table 
 @blueprint.route('/api/v1/update_comment', methods=['POST'])
 def api_update_comment():
@@ -811,6 +812,19 @@ def api_get_followers(user_id):
             })
         return jsonify({'status': 'OK', 'followers': follower_data})
     return jsonify({'status': 'ERROR', 'followers': []})
+
+#add book in reading list
+@blueprint.route('/api/v1/add_reading_later', methods=['POST'])
+def api_add_reading_later():
+    book_id = request.form['book_id']
+    user_id = request.form['user_id']
+    reading_list = ReadingList(
+        book_id=book_id,
+        user_id=user_id,
+    )
+    db.session.add(reading_list)
+    db.session.commit()
+    return jsonify({'status': 'OK'})
 
            
                           
