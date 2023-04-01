@@ -79,8 +79,16 @@ def userDetails(id):
     profile=Profile.query.filter_by(user_id=id).all()
     subscriptions=Subscriptions.query.filter_by(user_id=id).all()
     followers=Follower.query.filter_by(user_id=id).all()
-    return render_template('home/userDetails_id.html', user=user,readingList=readingList,comments=comments,reports=reports,books=books,profile=profile,subscriptions=subscriptions,followers=followers)
+    return render_template('home/user.html', user=user,readingList=readingList,comments=comments,reports=reports,books=books,profile=profile,subscriptions=subscriptions,followers=followers)
     
+#get profile by userid
+@blueprint.route('/admin/profile/<int:id>')
+def profileDetails(id):
+    #join query two table by user id
+    
+
+    profile = Profile.query.filter_by(user_id=id).first()
+    return render_template('home/profile.html', profile=profile)
 
 @blueprint.route('/user/<int:id>/action/delete')
 def userDelete(id):
