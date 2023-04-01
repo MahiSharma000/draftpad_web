@@ -628,7 +628,7 @@ def api_get_reading_list(name):
 # add a stripe payment endpoint
 @blueprint.route('/api/v1/create-checkout-session', methods=['POST'])
 def create_checkout_session():
-    stripe.api_key = 'sk_test_51MqsCESCz8rZMjh8Kwew9NTEiBpxHqEQ9xaqITnSYty7NIsPT831jc46picJ7vjMrqjD0cjy9IPqJikqOVi6i46e00Ko8jRijT'
+    stripe.api_key = 'sk_test_51MqsCESCz8rZMjh8Kwew9NTEiBpxHqEQ9xaqITnSYty7NIsPT831jc46picJ7vjMrqjD0cjy9IPqJikqOVi6i46e00Ko8jRijT '
 
     # Use an existing Customer ID if this is a returning customer
     customer = stripe.Customer.create()
