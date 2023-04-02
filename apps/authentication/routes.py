@@ -603,27 +603,6 @@ def api_get_books(name):
         return jsonify({'status': 'OK', 'books': book_data})
     return jsonify({'status': 'ERROR', 'books': []})
 
-#get reading list by name
-@blueprint.route('/api/v1/get_reading_list/<string:name>', methods=['GET'])
-def api_get_reading_list(name):
-    reading_list = ReadingList.query.filter(ReadingList.title.like('%'+name+'%')).all()
-    if reading_list:
-        reading_list_data = []
-        for reading in reading_list:
-            user = Users.query.filter_by(id=reading.user_id).first()
-            reading_list_data.append({
-                'id': reading.id,
-                'title': reading.title,
-                'user_id': reading.user_id,
-                'username': user.username,
-                'book_id': reading.book_id,
-                'chapter_id': reading.chapter_id,
-                'created_at': reading.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                'updated_at': reading.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
-            })
-        return jsonify({'status': 'OK', 'reading_list': reading_list_data})
-    return jsonify({'status': 'ERROR', 'reading_list': []})
-
 
 # add a stripe payment endpoint
 @blueprint.route('/api/v1/create-checkout-session', methods=['POST'])
@@ -852,6 +831,34 @@ def api_check_follow():
         return jsonify({'status': 'OK'})
     
     return jsonify({'status': 'ERROR'})
+
+#get books from reading list
+@blueprint.route('/api/v1/get_reading_list/<int:user_id>', methods=['GET'])
+def api_get_reading_list(user_id):
+    reading_list = ReadingList.query.filter_by(user_id=user_id).all()
+    if reading_list is not None:
+        reading_list_data = []
+        for reading in reading_list:
+            book = Book.query.filter_by(id=reading.book_id).first()
+            user = Users.query.filter_by(id=book.user_id).first()
+            chapter_count = Chapter.query.filter_by(book_id=book.id).count()
+            reading_list_data.append({
+                'id': book.id,
+                'cover': book.cover,
+                'title': book.title,
+                'user_id': book.user_id,
+                'username': user.username,
+                'status' :book.status,
+                'category_id': book.category_id,
+                'description': book.description,
+                'created_at': book.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_at': book.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'lang': book.lang,
+                'views': book.views,
+                'chapters': chapter_count
+            })
+        return jsonify({'status': 'OK', 'readLater': reading_list_data})
+    return jsonify({'status': 'ERROR', 'readLater': []})
 
            
                           

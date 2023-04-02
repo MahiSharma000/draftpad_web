@@ -338,7 +338,6 @@ class Subscriptions(db.Model):
 class ReadingList(db.Model):
     __tablename__ = 'ReadingList'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64))
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
     book_id = db.Column(db.Integer, db.ForeignKey('Books.id'))
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
