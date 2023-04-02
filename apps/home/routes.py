@@ -80,6 +80,13 @@ def userDetails(id):
     subscriptions=Subscriptions.query.filter_by(user_id=id).all()
     followers=Follower.query.filter_by(user_id=id).all()
     return render_template('home/user.html', user=user,readingList=readingList,comments=comments,reports=reports,books=books,profile=profile,subscriptions=subscriptions,followers=followers)
+
+@blueprint.route('/admin/book/<int:id>')
+def book(id):
+    book = Book.query.get(id)
+    reports=Report.query.filter_by(book_id=id).all()
+    chapters=Chapter.query.filter_by(book_id=id).all()
+    return render_template('home/book_view.html', book=book,reports=reports,chapter=chapters)
     
 
 @blueprint.route('/user/<int:id>/action/delete')

@@ -30,3 +30,14 @@ class CreateAccountForm(FlaskForm):
                              id='pwd_create',
                              validators=[DataRequired()])
     
+class AddMemberForm(FlaskForm):
+    username = TextField('Username',
+                         id='username_create',
+                         validators=[DataRequired()])
+    email = TextField('Email',
+                      id='email_create',
+                      validators=[DataRequired(), Email()])
+    password = PasswordField('Password',
+                             id='pwd_create',
+                             validators=[DataRequired()])
+    

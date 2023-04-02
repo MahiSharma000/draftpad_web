@@ -1,0 +1,53 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Basic Table {% endblock %} 
+
+<!-- Specific CSS Plugins goes HERE  -->
+{% block css_plugins %}{% endblock css_plugins %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/bookview.css">{% endblock stylesheets %}
+
+{% block content %} 
+
+<div class="container">
+    <div class="team-single">
+        <div class="row">
+            <div class="col-lg-4 col-md-5 xs-margin-30px-bottom">
+                <div class="team-single-img">
+                    <img src="{{book.cover}}" alt="">
+                </div>
+            </div>
+
+            <div class="col-lg-8 col-md-7">
+                <div class="team-single-text padding-50px-left sm-no-padding-left">
+                    <h3 class="font-size38 sm-font-size32 xs-font-size30">{{book.title}}</h3>
+                    <p class="no-margin-bottom">{{book.description}}</p>
+                    <h4 class="font-size24 sm-font-size22 xs-font-size20">CHAPTERS</h4>
+                    <div>
+                        <ul>
+                            {% for chapter in chapters %}
+                            <li><a href="/chapter/{{chapter.id}}">{{chapter.title}}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>            
+        </div>
+    </div>
+</div>
+
+  
+
+{% endblock content %}
+
+<!-- Specific JS Plugins goes HERE  -->
+{% block js_plugins %}
+
+  <script src="{{ config.ASSETS_ROOT }}/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+
+{% endblock js_plugins %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

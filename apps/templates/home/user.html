@@ -62,43 +62,31 @@
             </div>
             
           </div>
+
           <div class="tab-pane fade " id="book" role="tabpanel" aria-labelledby="book"> 
-            <div class="row">
-              <div class="container">
-                <div class="row justify-content-center">
-                  <div class="col-lg-8">
-                    <p class="text-muted text-center mb-4 f-17"></p>
-                  </div>
-                </div>
+            <div class="container">
+              <div class="row">
                 {% for book in books %}
-                <div class="column">
+              
                   <div class="col-lg-3 col-md-6">
                     <div class="team-box text-center bg-white mt-4">
                       <div class="team-img">
-                        <img src="https://i.pinimg.com/originals/0d/32/a5/0d32a5c9abe3ccb4262285df513ef3fe.jpg" alt="" class="img-fluid d-block rounded">
+                        <img src="{{book.cover}}" alt="" class="img-fluid d-block rounded">
                         <div class="team-name">
                           <h5 class="text-white f-18 font-weight-light mb-0">{{book.title}}</h5>
                         </div>
                       </div>
-                      <div class="team-content text-center p-3">
-                        <div class="">
-                          
-                          <p class="text-muted f-14 mb-0">{{book.description}}</p>
-                          
-                        </div>
-                      </div>
                       <div class="d-flex justify-content-center">
-                        <a href= ""><button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi-menu"></i>View</button></a>
+                        <a href= "/admin/book/{{book.id}}"><button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi-menu"></i>View</button></a>
                       </div>
                     </div>
-                  </div>
-                  
                   
                 </div>  
                 {% endfor %}  
               </div>
             </div>
           </div>
+
           <div class="tab-pane fade " id="follower" role="tabpanel" aria-labelledby="follower"> 
             {% for follower in followers %}
             <section id="team" class="team_area section-padding">
