@@ -76,7 +76,7 @@ def userDetails(id):
     comments=Comment.query.filter_by(user_id=id).all()
     reports=Report.query.filter_by(user_id=id).all()
     books=Book.query.filter_by(user_id=id).all()
-    profile=Profile.query.filter_by(user_id=id).all()
+    profile=Profile.query.filter_by(user_id=id).first()
     subscriptions=Subscriptions.query.filter_by(user_id=id).all()
     followers=Follower.query.filter_by(user_id=id).all()
     return render_template('home/user.html', user=user,readingList=readingList,comments=comments,reports=reports,books=books,profile=profile,subscriptions=subscriptions,followers=followers)
@@ -140,7 +140,13 @@ def bookDetails(id):
 
 @blueprint.route('/admin/comments')
 def admin_comments():
-    comments = Comment.query.all()
+    comments = Comment.query.order_by(Comment.id.desc()).all()
+    # get chapter details for each comment
+    for comment in comments:
+        chapter = Chapter.query.get(comment.chapter_id)
+        user = Users.query.get(comment.user_id)
+        comment.chapter = chapter
+        comment.user = user
     return render_template('home/comments.html', comments=comments)
 
 @blueprint.route('/admin/comment/<int:id>')
@@ -171,6 +177,19 @@ def reportDelete(id):
 def reportDetails(id):
     report = Report.query.get(id)
     return render_template('home/report_id.html', report=report)
+
+@blueprint.route('/admin/member/add', methods=['GET', 'POST'])
+def addMember():
+    if request.method == 'POST':
+        email = request.form['email']
+        username = request.form['username']
+        password = request.form['password']
+        user = Users(email=email, username=username, password=password)
+        db.session.add(user)
+        db.session.commit()
+        return redirect('/admin/users')
+
+    return render_template('home/add-new-memeber.html')
 
 
 
