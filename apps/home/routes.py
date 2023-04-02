@@ -189,7 +189,7 @@ def addMember():
         db.session.commit()
         return redirect('/admin/users')
 
-    return render_template('home/add-new-memeber.html')
+    return render_template('home/add_new_member.html')
 
 
 
