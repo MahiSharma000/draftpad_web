@@ -553,6 +553,8 @@ def api_get_profiles(name):
         profile_data = []
         
         for profile in profiles:
+            #count books written by user
+            book_count = Book.query.filter_by(user_id=profile.user_id).count()
             user = Users.query.filter_by(id=profile.user_id).first()
             if user is not None:
                 profile_data.append({
@@ -563,7 +565,7 @@ def api_get_profiles(name):
                     'last_name': profile.last_name,
                     'about': profile.about,
                     'profile_pic': profile.profile_pic,
-                    'book_written': profile.book_written,
+                    'book_written': book_count,
                     'followers': profile.followers,
                     'following': profile.following,
                     'is_premium': profile.is_premium,
