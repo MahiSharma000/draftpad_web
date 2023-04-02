@@ -6,73 +6,114 @@
 {% block css_plugins %}{% endblock css_plugins %}
 
 <!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/profile.css">
+<link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/book.css">
+<link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/follower.css">
+{% endblock stylesheets %}
 
 {% block content %} 
  
-<div class="row">
- <h1>USER NAME</h1>
- <img src="{{ config.ASSETS_ROOT }}/images/profile.jpg" alt="user" class="img-fluid" style="width: 100px; height: 100px; border-radius: 50%; margin-left: 20px;">
-</div>
-
-  <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/card.css">
-  <div class="container" >
-  <div class="row-height">
-    <div class="row " >
-      <div class="col-md-5 card">
-        <div class="col-xs-12 text-center">
-          <h3 class="heading-s1">PROFILE</h3>
-        </div>
-        <div class="col-xs-12 text-center">
-          <a href="javascript:void(0);" class="btn big-btn no-border red-background unstyle-anchor" style="padding: 13px 50px;">profile!</a>
-        </div>
-      </div>
-      <div class="col-md-5 card">
-        <div class="col-xs-12 text-center">
-          <h3 class="heading-s1">READING LIST</h3>
-        </div>
-        <div class="col-xs-12 text-center">
-          <a href="javascript:void(0);" class="btn big-btn no-border red-background unstyle-anchor" style="padding: 13px 50px;">Reading List!</a>
-        </div>
-      </div>
-      <div class=" col-md-5 card">
-        <div class="col-xs-12 text-center">
-          <h3 class="heading-s1">BOOKS</h3>
-        </div>
-        <div class="col-xs-12 text-center">
-          <a href="javascript:void(0);" class="btn big-btn no-border red-background unstyle-anchor" style="padding: 13px 50px;">Books</a>
-        </div>
-      </div>
-      <div class=" col-md-5  card">
-        <div class="col-xs-12 text-center">
-          <h3 class="heading-s1">COMMENTS</h3>
-        </div>
-        <div class="col-xs-12 text-center">
-          <a href="javascript:void(0);" class="btn big-btn no-border red-background unstyle-anchor" style="padding: 13px 50px;">Comments</a>
-        </div>
-      </div>
-      <div class=" col-md-5  card">
-        <div class="col-xs-12 text-center">
-          <h3 class="heading-s1">FOLLOWERS</h3>
-        </div>
-        <div class="col-xs-12 text-center">
-          <a href="javascript:void(0);" class="btn big-btn no-border red-background unstyle-anchor" style="padding: 13px 50px;">Followers</a>
-        </div>
-      </div>
-      <div class=" col-md-5  card">
-        <div class="col-xs-12 text-center">
-          <h3 class="heading-s1">REPORTS</h3>
-        </div>
-        <div class="col-xs-12 text-center">
-          <a href="javascript:void(0);" class="btn big-btn no-border red-background unstyle-anchor" style="padding: 13px 50px;">Reports</a>
-        </div>
-      </div>
-      <div class=" col-md-5  card">
-        <div class="col-xs-12 text-center">
-          <h3 class="heading-s1">SUBSCRIPTION</h3>
-        </div>
-        <div class="col-xs-12 text-center">
-          <a href="javascript:void(0);" class="btn big-btn no-border red-background unstyle-anchor" style="padding: 13px 50px;">Subscription</a>
+<div class="content-wrapper">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="home-tab">
+        <div class="d-sm-flex align-items-center justify-content-between border-bottom">
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active " id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">User Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="books-tab" data-bs-toggle="tab" href="#book" role="tab" aria-controls="book" >Books</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="follower-tab" data-bs-toggle="tab" href="#follower" role="tab" aria-controls="follower">Followers</a>
+            </li>
+          </ul>
+        </div>  
+        <div class="tab-content tab-content-basic">
+          <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile"> 
+          
+            <div class="row">
+                <div class="col-lg-12 mb-4 mb-sm-5">
+                  <div class="card card-style1 border-0">
+                    <div class="card-body p-1-9 p-sm-2-3 p-md-6 p-lg-7">
+                      <div class="row align-items-center">
+                        <div class="col-lg-6 mb-4 mb-lg-0">
+                          <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="...">
+                        </div>
+                        <div class="col-lg-6 px-xl-10">
+                              <div class="bg-secondary d-lg-inline-block py-1-9 px-1-9 px-sm-6 mb-1-9 rounded">
+                                <h3 class="h2 text-white mb-0">{{user.username}}</h3>
+                              </div>
+                              <ul class="list-unstyled mb-1-9">
+                                <li class="mb-2 mb-xl-3 display-28"><span class="display-26 text-secondary me-2 font-weight-600">First Name:</span> Coach</li>
+                                <li class="mb-2 mb-xl-3 display-28"><span class="display-26 text-secondary me-2 font-weight-600">Last Name:</span> 10 Years</li>
+                                <li class="mb-2 mb-xl-3 display-28"><span class="display-26 text-secondary me-2 font-weight-600">Email Id:</span>{{user.email}}</li>
+                                <li class="mb-2 mb-xl-3 display-28"><span class="display-26 text-secondary me-2 font-weight-600">Number of Books Wriiten:</span> 12</li>
+                                <li class="mb-2 mb-xl-3 display-28"><span class="display-26 text-secondary me-2 font-weight-600">Number of Followers:</span> 12</li>
+                                <li class="display-28"><span class="display-26 text-secondary me-2 font-weight-600">Phone:</span> 507 - 541 - 4567</li>
+                              </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          
+          </div>
+          <div class="tab-pane fade " id="book" role="tabpanel" aria-labelledby="book"> 
+            <div class="row">
+              <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <p class="text-muted text-center mb-4 f-17"></p>
+                    </div>
+                </div>
+            
+                <div class="row">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="team-box text-center bg-white mt-4">
+                            <div class="team-img">
+                                <img src="https://i.pinimg.com/originals/0d/32/a5/0d32a5c9abe3ccb4262285df513ef3fe.jpg" alt="" class="img-fluid d-block rounded">
+                                <div class="team-name">
+                                    <h5 class="text-white f-18 font-weight-light mb-0">Book Name</h5>
+                                </div>
+                            </div>
+                            <div class="team-content text-center p-3">
+                                <div class="">
+                                    
+                                    <p class="text-muted f-14 mb-0">Book description</p>
+                                    
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center">
+                              <a href= ""><button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi-menu"></i>View</button></a>
+                           </div>
+                        </div>
+                    </div>
+            
+                    
+                </div>    
+            </div>
+            </div>
+          </div>
+          <div class="tab-pane fade " id="follower" role="tabpanel" aria-labelledby="follower"> 
+            <section id="team" class="team_area section-padding">
+              <div class="container">								
+                <div class="row text-center">
+                  <div class="col-lg-2 col-sm-4 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.1s" data-wow-offset="0" style="visibility: visible; animation-duration: 1s; animation-delay: 0.1s; animation-name: fadeInUp;">
+                    <div class="our-team">
+                      <div class="single-team">
+                        <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="img-fluid" alt="">
+                        <h3>Gary Hunt</h3>
+                      </div>						
+                    </div><!--- END OUR TEAM -->	
+                  </div><!--- END COL -->	
+                  </div><!--- END ROW -->			
+              </div><!--- END CONTAINER -->
+            </section>
+          </div>
         </div>
       </div>
     </div>
