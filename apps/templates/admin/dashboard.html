@@ -99,7 +99,7 @@
                                   <th>Customer</th>
                                   <th>Email</th>
                                   <th>Password</th>
-                                  <th>Last Visited</th>
+                                  <th>Created At</th>
                                   <th>Actions</th>
                                 </tr>
                               </thead>
@@ -136,6 +136,7 @@
                                       <div class="d-flex">
                                         <a href="/admin/user/{{user.id}}" class="btn btn-primary btn-sm text-white me-1">View</a>
                                         <a href="/user/{{user.id}}/action/delete" class="btn btn-primary btn-sm text-white me-1">Delete</a>
+                                        <a href="/user/{{user.id}}/action/edit" class="btn btn-primary btn-sm text-white me-1">Edit</a>
                                       </div>
                                     </td>
                                   
@@ -163,12 +164,15 @@
                       <div class="card card-rounded">
                         <div class="card-body">
                           <div class="d-sm-flex justify-content-between align-items-start">
-                            <div>
-                              <h4 class="card-title card-title-dash">Book Categories</h4>
-                            </div>
-                            <div>
-                               <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-account-plus"></i>Add new category</button>
-                            </div>
+                            
+                              <div>
+                                <h4 class="card-title card-title-dash">Categories</h4>
+                                <p class="card-subtitle card-subtitle-dash">You have {{categories|length}} registered users</p>
+                              </div>
+                              <div>
+                                <a href = "/addcategory.html" target="_self" class="btn btn-primary btn-lg text-white mb-0 me-0" type="button">Add Category</a>
+                              </div>
+                            
                           </div>
                           <div>
                             <!--add search bar-->

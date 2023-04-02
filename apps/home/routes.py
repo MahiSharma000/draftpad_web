@@ -81,14 +81,6 @@ def userDetails(id):
     followers=Follower.query.filter_by(user_id=id).all()
     return render_template('home/user.html', user=user,readingList=readingList,comments=comments,reports=reports,books=books,profile=profile,subscriptions=subscriptions,followers=followers)
     
-#get profile by userid
-@blueprint.route('/admin/profile/<int:id>')
-def profileDetails(id):
-    #join query two table by user id
-    
-
-    profile = Profile.query.filter_by(user_id=id).first()
-    return render_template('home/profile.html', profile=profile)
 
 @blueprint.route('/user/<int:id>/action/delete')
 def userDelete(id):
@@ -96,6 +88,19 @@ def userDelete(id):
     db.session.delete(user)
     db.session.commit()
     return redirect('/admin/users')
+
+#edit user
+@blueprint.route('/user/<int:id>/action/edit', methods=['GET', 'POST'])
+def userEdit(id):
+    user = Users.query.get(id)
+    if request.method == 'POST':
+        user.email = request.form['email']
+        user.username = request.form['username']
+        user.password = request.form['password']
+        db.session.commit()
+        return redirect('/admin/users')
+    return render_template('home/editProfile.html', user=user)
+
 
 @blueprint.route('/book/<int:id>/action/delete')
 def bookDelete(id):
@@ -109,6 +114,7 @@ def admin_categories():
     categories = Category.query.all()
     return render_template('home/categories.html', categories=categories)
 
+#add categories
 @blueprint.route('/admin/category/<int:id>')
 def categories(id):    
     category = Category.query.get(id)
