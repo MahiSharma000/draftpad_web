@@ -7,7 +7,9 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-<link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/bookview.css">{% endblock stylesheets %}
+<link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/bookview.css">
+<link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/chapter.css">
+{% endblock stylesheets %}
 
 {% block content %} 
 
@@ -23,14 +25,32 @@
             <div class="col-lg-8 col-md-7">
                 <div class="team-single-text padding-50px-left sm-no-padding-left">
                     <h3 class="font-size38 sm-font-size32 xs-font-size30">{{book.title}}</h3>
+                    <h4 class="font-size26 sm-font-size24 xs-font-size22">Category : {{category_name}}</h4>
                     <p class="no-margin-bottom">{{book.description}}</p>
-                    <h4 class="font-size24 sm-font-size22 xs-font-size20">CHAPTERS</h4>
-                    <div>
-                        <ul>
+                    <div class="container bootdey">
+                    <div class="panel panel-default panel-order">
+                        <div class="panel-heading">
+                        <h4><strong>CHAPTERS</strong></h4>
+                        </div>
+
+                        <div class="panel-body">
                             {% for chapter in chapters %}
-                            <li><a href="/chapter/{{chapter.id}}">{{chapter.title}}</a></li>
+                            <div class="row">
+                                <div class="col-md-11">
+                                    <div class="row">
+                                        <div class="col-md-12">
+            
+                                            <span><strong>Chapter Name :</strong></span> <a href="/admin/chapters/{{chapter.id}}"><span class="label label-info">{{chapter.title}}</span></a><br />
+                                            <a data-placement="top" class="btn btn-success btn-xs glyphicon glyphicon-ok" href="#" title="View">Likes {{chapter.total_likes}}</a>
+                                            <a data-placement="top" class="btn btn-danger btn-xs glyphicon glyphicon-trash" href="#" title="Danger">Comments {{chapter.total_comments}}</a>
+                                        </div>
+                                        <div class="col-md-12">chapter created on: 05/31/2014</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             {% endfor %}
-                        </ul>
+                        </div>
                     </div>
                 </div>
             </div>            

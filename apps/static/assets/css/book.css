@@ -32,7 +32,9 @@ body{
 .team-img {
   position: relative;
   overflow: hidden;
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;  
 }
 
 

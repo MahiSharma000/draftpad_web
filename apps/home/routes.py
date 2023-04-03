@@ -3,6 +3,9 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
+import base64
+import io
+from tkinter import Image
 from apps.home import blueprint
 from flask import render_template, request, redirect, url_for
 from flask_login import login_required
@@ -84,10 +87,16 @@ def userDetails(id):
 @blueprint.route('/admin/book/<int:id>')
 def book(id):
     book = Book.query.get(id)
+    category_id = book.category_id
+    category_name = Category.query.get(category_id).name
     reports=Report.query.filter_by(book_id=id).all()
     chapters=Chapter.query.filter_by(book_id=id).all()
-    return render_template('home/book_view.html', book=book,reports=reports,chapter=chapters)
-    
+    return render_template('home/book_view.html', book=book,reports=reports,chapters=chapters,category_name=category_name)
+
+@blueprint.route('/admin/chapters/<int:id>')
+def chaptercontent(id):
+    chapter = Chapter.query.get(id)
+    return render_template('home/chapterContent.html', chapter=chapter)
 
 @blueprint.route('/user/<int:id>/action/delete')
 def userDelete(id):
@@ -197,6 +206,14 @@ def addMember():
         return redirect('/admin/users')
 
     return render_template('home/add_new_member.html')
+
+@blueprint.route('/admin/bookCover/<int:id>')
+def bookCover(id):
+    book = Book.query.get(id)
+    cover=book.cover
+    decoded_image = base64.b64decode(cover)
+    image = Image.open(io.BytesIO(decoded_image))
+    return render_template('home/user.html', image=image)
 
 
 
