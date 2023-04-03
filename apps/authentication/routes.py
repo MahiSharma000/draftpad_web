@@ -315,6 +315,10 @@ def api_author_profile(user_id):
         profile_data = []
         for profile in profile:
             user = Users.query.filter_by(id=profile.user_id).first()
+            book_count = Book.query.filter_by(user_id=profile.user_id).count()
+            #count total followers
+            profile.followers = Follower.query.filter_by(follower_id=profile.user_id).count()
+            profile.book_written = book_count
             profile_data.append({
                 'id': profile.id,
                 'user_id': profile.user_id,
@@ -490,20 +494,23 @@ def api_chapter(chapter_id):
         return jsonify({'status': 'OK', 'chapter': chapter_data})
     return jsonify({'status': 'ERROR', 'chapter': ''})
 
-
-
+#add follower if not already following
 @blueprint.route('/api/v1/follower', methods=['POST'])
-def api_follower_add():
-    try:
+def api_follow_add():
+    user_id = request.form.get('user_id')
+    follower_id = request.form.get('follower_id')
+    profile = Profile.query.filter_by(user_id=user_id).first()
+    follower = Follower.query.filter_by(user_id=user_id).filter_by(follower_id=follower_id).first()
+    if follower is None:
         follower = Follower(
-        user_id = request.form.get('user_id'),
-        follower_id = request.form.get('follower_id'),
+        user_id = user_id,
+        follower_id = follower_id,
         )
+        profile.followers = profile.followers + 1
         db.session.add(follower)
         db.session.commit()
         return jsonify({'status': 'success', 'msg': 'Follower added'})
-    except:
-        return jsonify({'status': 'error', 'msg': 'Follower not added'})
+
     
 @blueprint.route('/api/v1/download', methods=['POST'])
 def api_download_add():
@@ -556,6 +563,8 @@ def api_get_profiles(name):
             #count books written by user
             book_count = Book.query.filter_by(user_id=profile.user_id).count()
             user = Users.query.filter_by(id=profile.user_id).first()
+            #count total followers
+            profile.followers = Follower.query.filter_by(follower_id=profile.user_id).count()
             if user is not None:
                 profile_data.append({
                     'id': profile.id,
@@ -686,7 +695,7 @@ def api_report():
     db.session.commit()
     return jsonify({'status': 'OK', 'message': 'Reported successfully'})
 
- #update  number of comments in chapter table 
+#update  number of comments in chapter table 
 @blueprint.route('/api/v1/update_comment', methods=['POST'])
 def api_update_comment():
     chapter_id = request.form['id']
@@ -709,18 +718,23 @@ def api_check_like():
     
     return jsonify({'status': 'ERROR'})
 
-#add likes to chapter
+#add likes to chapter if user has not liked the chapter
 @blueprint.route('/api/v1/add_like', methods=['POST'])
 def api_add_like():
     chapter_id = request.form['chapter_id']
     user_id = request.form['user_id']
-    like = LikedChapter(
-        chapter_id=chapter_id,
-        user_id=user_id,
-    )
-    db.session.add(like)
-    db.session.commit()
-    return jsonify({'status': 'OK'})
+    chapter = Chapter.query.filter_by(user_id = user_id).filter_by(id = chapter_id).first()
+    like = LikedChapter.query.filter_by(chapter_id=chapter_id).filter_by(user_id=user_id).first()
+    if like is None:
+        like = LikedChapter(
+            chapter_id=chapter_id,
+            user_id=user_id
+        )
+        chapter.total_likes = chapter.total_likes + 1
+        db.session.add(like)
+        db.session.commit()
+        return jsonify({'status': 'OK'})
+    return jsonify({'status': 'ERROR'})
 
 #delete like from chapter
 @blueprint.route('/api/v1/delete_like', methods=['POST'])
@@ -753,17 +767,6 @@ def api_get_category(category_id):
         return jsonify({'status': 'OK', 'category': category.name})
     return jsonify({'status': 'ERROR', 'category': ''})
 
-#post reading list
-@blueprint.route('/api/v1/reading_list', methods=['POST'])
-def api_reading_list():
-    reading_list = ReadingList(
-        name="NULL",
-        user_id=request.form.get('user_id'),
-        book_id=request.form.get('book_id'),
-    )
-    db.session.add(reading_list)
-    db.session.commit()
-    return jsonify({'status': 'OK', 'message': 'Added to reading list successfully'})
 #update number of views in book table
 @blueprint.route('/api/v1/update_views', methods=['POST'])
 def api_update_views():
@@ -808,18 +811,22 @@ def api_get_followers(user_id):
         return jsonify({'status': 'OK', 'followers': follower_data})
     return jsonify({'status': 'ERROR', 'followers': []})
 
-#add book in reading list
+#add book in reading list if it is not already added
 @blueprint.route('/api/v1/add_reading_later', methods=['POST'])
-def api_add_reading_later():
+def api_add_reading_list():
     book_id = request.form['book_id']
     user_id = request.form['user_id']
-    reading_list = ReadingList(
-        book_id=book_id,
-        user_id=user_id,
-    )
-    db.session.add(reading_list)
-    db.session.commit()
-    return jsonify({'status': 'OK'})
+    reading_list = ReadingList.query.filter_by(book_id=book_id).filter_by(user_id=user_id).first()
+    if reading_list is None:
+        reading_list = ReadingList(
+            name="NULL",
+            user_id=user_id,
+            book_id=book_id,
+        )
+        db.session.add(reading_list)
+        db.session.commit()
+        return jsonify({'status': 'OK', 'message': 'Added to reading list successfully'})
+    return jsonify({'status': 'ERROR', 'message': 'Already added to reading list'})
 
 
 #check the user is following the author
@@ -831,7 +838,6 @@ def api_check_follow():
     if follow is not None:
         db.session.commit()
         return jsonify({'status': 'OK'})
-    
     return jsonify({'status': 'ERROR'})
 
 #get books from reading list
@@ -861,6 +867,41 @@ def api_get_reading_list(user_id):
             })
         return jsonify({'status': 'OK', 'readLater': reading_list_data})
     return jsonify({'status': 'ERROR', 'readLater': []})
+
+#unfollow author
+@blueprint.route('/api/v1/unfollow', methods=['POST'])
+def api_unfollow():
+    user_id = request.form['user_id']
+    follower_id = request.form['follower_id']
+    follow = Follower.query.filter_by(user_id=user_id).filter_by(follower_id=follower_id).first()
+    if follow is not None:
+        db.session.delete(follow)
+        db.session.commit()
+        return jsonify({'status': 'OK'})
+    return jsonify({'status': 'ERROR'})
+
+#delete chapter
+@blueprint.route('/api/v1/delete_chapter', methods=['POST'])   
+def api_delete_chapter():
+    chapter_id = request.form['chapter_id']
+    chapter = Chapter.query.filter_by(id=chapter_id).first()
+    if chapter is not None:
+        db.session.delete(chapter)
+        db.session.commit()
+        return jsonify({'status': 'OK'})
+    return jsonify({'status': 'ERROR'})
+
+#delete book
+@blueprint.route('/api/v1/delete_book', methods=['POST'])
+def api_delete_book():
+    book_id = request.form['book_id']
+    book = Book.query.filter_by(id=book_id).first()
+    if book is not None:
+        db.session.delete(book)
+        db.session.commit()
+        return jsonify({'status': 'OK'})
+    return jsonify({'status': 'ERROR'})
+
 
            
                           
