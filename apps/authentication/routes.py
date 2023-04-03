@@ -315,6 +315,10 @@ def api_author_profile(user_id):
         profile_data = []
         for profile in profile:
             user = Users.query.filter_by(id=profile.user_id).first()
+            book_count = Book.query.filter_by(user_id=profile.user_id).count()
+            #count total followers
+            profile.followers = Follower.query.filter_by(follower_id=profile.user_id).count()
+            profile.book_written = book_count
             profile_data.append({
                 'id': profile.id,
                 'user_id': profile.user_id,
@@ -559,6 +563,8 @@ def api_get_profiles(name):
             #count books written by user
             book_count = Book.query.filter_by(user_id=profile.user_id).count()
             user = Users.query.filter_by(id=profile.user_id).first()
+            #count total followers
+            profile.followers = Follower.query.filter_by(follower_id=profile.user_id).count()
             if user is not None:
                 profile_data.append({
                     'id': profile.id,
@@ -861,17 +867,6 @@ def api_get_reading_list(user_id):
             })
         return jsonify({'status': 'OK', 'readLater': reading_list_data})
     return jsonify({'status': 'ERROR', 'readLater': []})
-
-#update book written by author
-@blueprint.route('/api/v1/update_book_written', methods=['POST'])
-def api_update_book_written():
-    user_id = request.form['user_id']
-    profile = Profile.query.filter_by(user_id=user_id).first()
-    if profile is not None:
-        profile.book_written = profile.book_written + 1
-        db.session.commit()
-        return jsonify({'status': 'OK'})
-    return jsonify({'status': 'ERROR'})
 
 #unfollow author
 @blueprint.route('/api/v1/unfollow', methods=['POST'])
