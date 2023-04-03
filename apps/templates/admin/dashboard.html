@@ -78,7 +78,7 @@
                               <p class="card-subtitle card-subtitle-dash">You have {{users|length}} registered users</p>
                             </div>
                             <div>
-                              <a href = "/add_member" target="_self" class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-account-plus"></i>Add new member</a>
+                              <a href = "/admin/member/add" target="_self" class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-account-plus"></i>Add new member</a>
                             </div>
                           </div>
                           <div>
@@ -326,7 +326,7 @@
                                   </td>
                                   <td>
                                     <div class="d-flex">
-                                      <a href="" class="btn btn-primary btn-sm text-white me-1">View</a>
+                                      <a href="/admin/book/{{book.id}}" class="btn btn-primary btn-sm text-white me-1">View</a>
                                       <a href="" class="btn btn-primary btn-sm text-white me-1">Edit</a>
                                       <a href="/book/{{book.id}}/action/delete" class="btn btn-primary btn-sm text-white me-1">Delete</a>
                                     </div>
