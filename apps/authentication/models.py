@@ -121,6 +121,7 @@ class Profile(db.Model):
     
     def __repr__(self):
         return str(self.first_name)
+    
 
 class Category(db.Model):
 

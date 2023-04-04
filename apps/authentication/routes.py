@@ -558,12 +558,9 @@ def api_get_profiles(name):
     profiles = Profile.query.filter(Profile.first_name.like(name+'%')).all()
     if profiles:
         profile_data = []
-        
         for profile in profiles:
-            #count books written by user
             book_count = Book.query.filter_by(user_id=profile.user_id).count()
             user = Users.query.filter_by(id=profile.user_id).first()
-            #count total followers
             profile.followers = Follower.query.filter_by(follower_id=profile.user_id).count()
             if user is not None:
                 profile_data.append({
@@ -901,6 +898,56 @@ def api_delete_book():
         db.session.commit()
         return jsonify({'status': 'OK'})
     return jsonify({'status': 'ERROR'})
+
+#block author
+@blueprint.route('/api/v1/block', methods=['POST'])
+def api_block_author():
+    user_id = request.form['user_id']
+    author_id = request.form['blocked_id']
+    block = BlockedUser.query.filter_by(user_id=user_id).filter_by(blocked_user_id=author_id).first()
+    if block is None:
+        block = BlockedUser(
+            user_id=user_id,
+            blocked_user_id=author_id,
+        )
+        db.session.add(block)
+        db.session.commit()
+        return jsonify({'status': 'OK'})
+    else:
+        db.session.delete(block)
+        db.session.commit()
+        return jsonify({'status': 'OK'})
+
+#get blocked authors
+@blueprint.route('/api/v1/get_blocked/<int:user_id>', methods=['GET'])
+def api_get_blocked_authors(user_id):
+    blocked_authors = BlockedUser.query.filter_by(user_id=user_id).all()
+    if blocked_authors is not None:
+        blocked_authors_data = []
+        for blocked in blocked_authors:
+            user = Users.query.filter_by(id=blocked.blocked_user_id).first()
+            profile = Profile.query.filter_by(user_id=user.id).first()
+            blocked_authors_data.append({
+                'id': profile.id,
+                'user_id':profile.user_id,
+                'username': user.username,
+                'email': user.email,
+                'first_name': profile.first_name,
+                'last_name': profile.last_name,
+                'about':profile.about,
+                'profile_pic': profile.profile_pic,
+                'book_written': profile.book_written,
+                'followers': profile.followers,
+                'following': profile.following,
+                'is_premium': profile.is_premium,
+                'books_read': profile.books_read,
+                'dob': profile.dob,
+                'phone': profile.phone,
+                'created_at': profile.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_at': profile.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+            })
+        return jsonify({'status': 'OK', 'blocked': blocked_authors_data})
+    return jsonify({'status': 'ERROR', 'blocked': []})
 
 
            
