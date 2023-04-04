@@ -877,7 +877,6 @@ def api_unfollow():
         return jsonify({'status': 'OK'})
     return jsonify({'status': 'ERROR'})
 
-#delete chapter
 @blueprint.route('/api/v1/delete_chapter', methods=['POST'])   
 def api_delete_chapter():
     chapter_id = request.form['id']
@@ -888,7 +887,6 @@ def api_delete_chapter():
         return jsonify({'status': 'OK'})
     return jsonify({'status': 'ERROR'})
 
-#delete book
 @blueprint.route('/api/v1/delete_book', methods=['POST'])
 def api_delete_book():
     book_id = request.form['id']
