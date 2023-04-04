@@ -883,7 +883,7 @@ def api_unfollow():
 #delete chapter
 @blueprint.route('/api/v1/delete_chapter', methods=['POST'])   
 def api_delete_chapter():
-    chapter_id = request.form['chapter_id']
+    chapter_id = request.form['id']
     chapter = Chapter.query.filter_by(id=chapter_id).first()
     if chapter is not None:
         db.session.delete(chapter)
@@ -894,7 +894,7 @@ def api_delete_chapter():
 #delete book
 @blueprint.route('/api/v1/delete_book', methods=['POST'])
 def api_delete_book():
-    book_id = request.form['book_id']
+    book_id = request.form['id']
     book = Book.query.filter_by(id=book_id).first()
     if book is not None:
         db.session.delete(book)
