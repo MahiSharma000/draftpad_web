@@ -675,7 +675,7 @@ def api_get_books_with_max_views():
                 'views': book.views,
                 'chapters': chapter_count
             })
-            book_data.sort(key=lambda x: x['views'], reverse=True)
+        book_data.sort(key=lambda x: x['views'], reverse=True)
         return jsonify({'status': 'OK', 'books': book_data})
     return jsonify({'status': 'ERROR', 'books': []})
 
