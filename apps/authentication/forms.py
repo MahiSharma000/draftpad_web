@@ -43,3 +43,8 @@ class AddMemberForm(FlaskForm):
                              id='pwd_create',
                              validators=[DataRequired()])
     
+class AddCategoryForm(FlaskForm):
+    category = TextField('Category',
+                         id='category_create',
+                         validators=[DataRequired()])
+    

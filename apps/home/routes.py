@@ -5,8 +5,10 @@ Copyright (c) 2019 - present AppSeed.us
 
 import base64
 import io
+from os import name
+from sre_parse import CATEGORIES
 from tkinter import Image
-from apps.authentication.forms import AddMemberForm, CreateAccountForm
+from apps.authentication.forms import AddCategoryForm, AddMemberForm, CreateAccountForm
 from apps.home import blueprint
 from flask import render_template, request, redirect, url_for
 from flask_login import login_required
@@ -245,6 +247,26 @@ def addMember():
         return redirect('/admin/users')
         
     return render_template('home/add_new_member.html', form=create_account_form)
+
+@blueprint.route('/admin/category/add', methods=['GET', 'POST'])
+def addcAT():
+    add_category_form = AddCategoryForm(request.form)
+    if 'category' in request.form:
+        category = request.form['category']
+
+        #check category exists
+        category = Category.query.filter_by(name=category).first()
+
+        if category:
+            return render_template(msg='Category already exists')
+
+        # create category
+        category = Category(**request.form)
+        db.session.add(category)
+        db.session.commit()     
+        return redirect('/admin/categories')
+        
+    return render_template('home/addCategory.html', form=add_category_form)
 
 @blueprint.route('/admin/bookCover/<int:id>')
 def bookCover(id):

@@ -991,8 +991,17 @@ def handle_payment_intent_succeeded(payment_intent):
         if profile is not None:
             profile.is_premium = 1
             db.session.commit()
-            
-            print("Premium user updated")
+            subscriptions = Subscriptions(
+                user_id=request.form['user_id'],
+                amount=request.form['amount'],
+                duration=request.form['duration'],
+                transaction_id=request.form['transaction_id'],
+                is_completed=request.form['is_completed'],
+            )
+            db.session.add(subscriptions)
+            db.session.commit()
+            return jsonify({'status': 'OK'})
+        print("Premium user updated")
     
 
            
