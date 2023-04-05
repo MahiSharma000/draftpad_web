@@ -993,6 +993,35 @@ def handle_payment_intent_succeeded(payment_intent):
             db.session.commit()
             
             print("Premium user updated")
+
+#get downloaded books
+@blueprint.route('/api/v1/get_favourite/<int:user_id>', methods=['GET'])
+def api_get_favourite_books(user_id):
+    favourite_books = Download.query.filter_by(user_id=user_id).all()
+    if favourite_books is not None:
+        favourite_books_data = []
+        for downloaded in favourite_books:
+            book = Book.query.filter_by(id=downloaded.book_id).first()
+            user = Users.query.filter_by(id=book.user_id).first()
+            profile = Profile.query.filter_by(user_id=user.id).first()
+            chapter_count = Chapter.query.filter_by(book_id=book.id).count()
+            favourite_books_data.append({
+                'id': book.id,
+                'cover': book.cover,
+                'title': book.title,
+                'user_id': book.user_id,
+                'username': user.username,
+                'status' :book.status,
+                'category_id': book.category_id,
+                'description': book.description,
+                'created_at': book.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_at': book.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'lang': book.lang,
+                'views': book.views,
+                'chapters': chapter_count
+            })
+        return jsonify({'status': 'OK', 'favourite': favourite_books_data})
+    return jsonify({'status': 'ERROR', 'favourite': []})
     
 
            
