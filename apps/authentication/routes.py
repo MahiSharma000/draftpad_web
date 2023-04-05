@@ -625,7 +625,7 @@ def create_checkout_session():
     )
     paymentIntent = stripe.PaymentIntent.create(
         amount=1,
-        currency='inr',
+        currency='usd',
         customer=customer['id'],
         automatic_payment_methods={
         'enabled': True,
