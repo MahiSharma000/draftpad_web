@@ -118,6 +118,15 @@ class Profile(db.Model):
     def dec_book_written(self):
         self.book_written -= 1
         self.update()
+
+    def get_image(self):
+        import base64
+        # if image is link
+        if self.profile_pic.startswith('http'):
+            return self.profile_pic
+        else:
+            bytes = base64.b64decode(self.profile_pic)
+            return bytes
     
     def __repr__(self):
         return str(self.first_name)

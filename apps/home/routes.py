@@ -223,9 +223,8 @@ def reportDetails(id):
 
 @blueprint.route('/admin/member/add', methods=['GET', 'POST'])
 def addMember():
-    create_account_form = CreateAccountForm(request.form)
+    create_account_form = AddMemberForm(request.form)
     if 'register' in request.form:
-
         username = request.form['username']
         email = request.form['email']
 
@@ -242,14 +241,10 @@ def addMember():
         # else we can create the user
         user = Users(**request.form)
         db.session.add(user)
-        db.session.commit()
-
-        return render_template('accounts/register.html',
-                               msg='User created please <a href="/login">login</a>',
-                               success=True,
-                               form=create_account_form)
-
-    return render_template('home/add_new_member.html')
+        db.session.commit()        
+        return redirect('/admin/users')
+        
+    return render_template('home/add_new_member.html', form=create_account_form)
 
 @blueprint.route('/admin/bookCover/<int:id>')
 def bookCover(id):
