@@ -18,6 +18,13 @@ from apps.authentication.models import *
 from apps.authentication.util import verify_pass
 
 
+# Ensure the key is kept out of any version control system you might be using.
+stripe.api_key = "sk_test_51MqsCESCz8rZMjh8Kwew9NTEiBpxHqEQ9xaqITnSYty7NIsPT831jc46picJ7vjMrqjD0cjy9IPqJikqOVi6i46e00Ko8jRijT"
+
+# This is your Stripe CLI webhook secret for testing your endpoint locally.
+endpoint_secret = 'whsec_f09872bc8f5443c27fb4ed547cdaa5b2c5ac6cd8bd1204cddd603f3ce144d403'
+
+
 @blueprint.route('/')
 def route_default():
     return redirect(url_for('authentication_blueprint.login'))
@@ -947,6 +954,46 @@ def api_get_blocked_authors(user_id):
         return jsonify({'status': 'OK', 'blocked': blocked_authors_data})
     return jsonify({'status': 'ERROR', 'blocked': []})
 
+@blueprint.route('/webhook', methods=['POST'])
+def webhook():
+    event = None
+    payload = request.data
+    sig_header = request.headers['STRIPE_SIGNATURE']
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError as e:
+        # Invalid payload
+        raise e
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        raise e
+
+    # Handle the event
+    if event['type'] == 'payment_intent.succeeded':
+        payment_intent = event['data']['object']
+        handle_payment_intent_succeeded(payment_intent)
+    else:
+      print('Unhandled event type {}'.format(event['type']))
+
+    return jsonify(success=True)
+
+def handle_payment_intent_succeeded(payment_intent):
+    print('PaymentIntent was successful!')
+    # get user name
+    email = payment_intent['customer_details']['email']
+    amount = payment_intent['amount_total']
+    user = Users.query.filter_by(email=email).first()
+    if user is not None:
+        profile = Profile.query.filter_by(user_id=user.id).first()
+        if profile is not None:
+            profile.is_premium = 1
+            db.session.commit()
+            
+            print("Premium user updated")
+    
 
            
                           
