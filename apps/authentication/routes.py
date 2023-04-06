@@ -823,7 +823,6 @@ def api_add_reading_list():
     reading_list = ReadingList.query.filter_by(book_id=book_id).filter_by(user_id=user_id).first()
     if reading_list is None:
         reading_list = ReadingList(
-            name="NULL",
             user_id=user_id,
             book_id=book_id,
         )
@@ -991,9 +990,17 @@ def handle_payment_intent_succeeded(payment_intent):
         if profile is not None:
             profile.is_premium = 1
             db.session.commit()
-<<<<<<< HEAD
-            
-            print("Premium user updated")
+            subscriptions = Subscriptions(
+            user_id=request.form['user_id'],
+            amount=request.form['amount'],
+            duration=request.form['duration'],
+            transaction_id=request.form['transaction_id'],
+            is_completed=request.form['is_completed'],
+            )
+            db.session.add(subscriptions)
+            db.session.commit()
+            return jsonify({'status': 'OK'})
+        print("Premium user updated")
 
 #get downloaded books
 @blueprint.route('/api/v1/get_favourite/<int:user_id>', methods=['GET'])
@@ -1023,19 +1030,9 @@ def api_get_favourite_books(user_id):
             })
         return jsonify({'status': 'OK', 'favourite': favourite_books_data})
     return jsonify({'status': 'ERROR', 'favourite': []})
-=======
-            subscriptions = Subscriptions(
-                user_id=request.form['user_id'],
-                amount=request.form['amount'],
-                duration=request.form['duration'],
-                transaction_id=request.form['transaction_id'],
-                is_completed=request.form['is_completed'],
-            )
-            db.session.add(subscriptions)
-            db.session.commit()
-            return jsonify({'status': 'OK'})
-        print("Premium user updated")
->>>>>>> 086f7fd782864c837921c52cb7a30986790995ed
+
+
+
     
 
            
