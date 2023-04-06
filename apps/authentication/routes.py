@@ -1039,17 +1039,30 @@ def api_get_favourite_books(user_id):
         return jsonify({'status': 'OK', 'favourite': favourite_books_data})
     return jsonify({'status': 'ERROR', 'favourite': []})
 
-#delete reading list
-@blueprint.route('/api/v1/delete_readlater', methods=['POST'])
-def api_delete_readlater():
+
+@blueprint.route('/api/v1/delete_favourite', methods=['POST'])
+def api_delete_library():
     user_id = request.form['user_id']
     book_id = request.form['book_id']
-    readlater = ReadingList.query.filter_by(user_id=user_id).filter_by(book_id=book_id).first()
-    if readlater is not None:
-        db.session.delete(readlater)
-        db.session.commit()
-        return jsonify({'status': 'OK'})
-    return jsonify({'status': 'ERROR'})
+    favourite = Download.query.filter_by(user_id=user_id).filter_by(book_id=book_id).first()
+    if favourite is not None:
+         db.session.delete(favourite)
+         db.session.commit()
+         return jsonify({'status': 'OK','msg':'Deleted from favourite'})
+    return jsonify({'status': 'ERROR','msg':'Not found in favourite'})
+
+#delete reading list
+@blueprint.route('/api/v1/delete_readinglater', methods=['POST'])
+def api_delete_readinglater():
+    user_id = request.form['user_id']
+    book_id = request.form['book_id']
+    reading = ReadingList.query.filter_by(user_id=user_id).filter_by(book_id=book_id).first()
+    if reading is not None:
+         db.session.delete(reading)
+         db.session.commit()
+         return jsonify({'status': 'OK','msg':'Deleted from reading list'})
+    return jsonify({'status': 'ERROR','msg':'Not found in reading list'})
+
 
 
 
