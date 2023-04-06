@@ -147,8 +147,9 @@ def api_register():
     username = request.form['username']
     email = request.form['email']
     password = request.form['password']
-
-
+    #fix the length of the password to 8 characters
+    if len(password)<8 or len(password)>16:
+        return jsonify({'status': 'ERROR', 'msg': 'Password must be at least 8 characters and maximum 16 characters'})
     # Check usename exists
     user = Users.query.filter_by(username=username).first()
     if user:
@@ -206,6 +207,9 @@ def api_profile_update():
     user_id = request.form['user_id']
     if user_id:
         profile = Profile.query.filter_by(user_id=user_id).first()
+        #check the length of phone number
+        if len(request.form['phone'])<10 or len(request.form['phone'])>10:
+            return jsonify({'status': 'ERROR', 'msg': 'Phone number must be 10 digits'})
         user = Users.query.filter_by(id=user_id).first()
         dob = covert_str_to_date(request.form['dob'])
         print('dob', dob)
@@ -222,7 +226,7 @@ def api_profile_update():
             profile.dob = dob
             profile.phone = request.form['phone']
             db.session.commit()
-            return jsonify({'status': 'OK'})
+            return jsonify({'status': 'OK','msg': 'Profile updated'})
         else:
             profile = Profile(
                 user_id=request.form['user_id'],
@@ -241,8 +245,8 @@ def api_profile_update():
             )
             db.session.add(profile)
             db.session.commit()
-            return jsonify({'status': 'OK'})
-    return jsonify({'status': 'ERROR'})
+            return jsonify({'status': 'OK', 'msg': 'Profile created'})
+    return jsonify({'status': 'ERROR','msg': 'User not found'})
 
 @blueprint.route('/api/v1/book', methods=['POST'])
 def api_book_add():
@@ -339,7 +343,7 @@ def api_author_profile(user_id):
                 'following': profile.following,
                 'is_premium': profile.is_premium,
                 'books_read': profile.books_read,
-                'dob': profile.dob,
+                'dob': profile.dob.date(),
                 'phone': profile.phone,
                 'created_at': profile.created_at,
                 'updated_at': profile.updated_at,
@@ -521,18 +525,21 @@ def api_follow_add():
     
 @blueprint.route('/api/v1/download', methods=['POST'])
 def api_download_add():
-    try:
+    #check if user has already downloaded the book
+    user_id = request.form.get('user_id')
+    book_id = request.form.get('book_id')
+    download = Download.query.filter_by(user_id=user_id).filter_by(book_id=book_id).first()
+    if download is None:
         download = Download(
         user_id = request.form.get('user_id'),
         book_id = request.form.get('book_id'),
         )
         db.session.add(download)
         db.session.commit()
-        return jsonify({'status': 'success', 'msg': ' Book Download '})
-    except:
-        return jsonify({'status': 'error', 'msg': 'Book not Download'})
+        return jsonify({'status': 'success', 'msg': ' Book added to favourites '})
+    return jsonify({'status': 'error', 'msg': 'Book already added in favourites'})
 
-#get books by user_id and status
+#get books by category_id and status
 @blueprint.route('/api/v1/books/<int:user_id>/<string:status>', methods=['GET'])
 def api_books(user_id, status):
     books = Book.query.filter_by(user_id=user_id).filter_by(status=status).all()
@@ -828,8 +835,9 @@ def api_add_reading_list():
         )
         db.session.add(reading_list)
         db.session.commit()
-        return jsonify({'status': 'OK', 'message': 'Added to reading list successfully'})
-    return jsonify({'status': 'ERROR', 'message': 'Already added to reading list'})
+        return jsonify({'status': 'OK', 'msg': 'Added to Read Later successfully'})
+    else:
+        return jsonify({'status': 'ERROR', 'msg': 'Already added to Read Later'})
 
 
 #check the user is following the author
@@ -1030,6 +1038,20 @@ def api_get_favourite_books(user_id):
             })
         return jsonify({'status': 'OK', 'favourite': favourite_books_data})
     return jsonify({'status': 'ERROR', 'favourite': []})
+
+#delete reading list
+@blueprint.route('/api/v1/delete_readlater', methods=['POST'])
+def api_delete_readlater():
+    user_id = request.form['user_id']
+    book_id = request.form['book_id']
+    readlater = ReadingList.query.filter_by(user_id=user_id).filter_by(book_id=book_id).first()
+    if readlater is not None:
+        db.session.delete(readlater)
+        db.session.commit()
+        return jsonify({'status': 'OK'})
+    return jsonify({'status': 'ERROR'})
+
+
 
 
 
