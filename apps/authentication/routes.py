@@ -522,6 +522,8 @@ def api_follow_add():
         db.session.commit()
         return jsonify({'status': 'success', 'msg': 'Follower added'})
 
+def push_notification():
+    pass
     
 @blueprint.route('/api/v1/download', methods=['POST'])
 def api_download_add():
@@ -1063,6 +1065,16 @@ def api_delete_readinglater():
          return jsonify({'status': 'OK','msg':'Deleted from reading list'})
     return jsonify({'status': 'ERROR','msg':'Not found in reading list'})
 
+def send_message(token, title, body):
+    message = messaging.Message(data={'title': title,'body': body,}, token=token)
+    response = messaging.send(message)
+    print('Successfully sent message:', response)
+
+# @blueprint.route('/api/v1/check/follower/<int:user_id>', methods=['GET'])
+# def check_if_you_got_any_follower(user_id):
+#     # count user_id exists as follower_id in Followers table
+#     followers = Follower.query.filter_by(follower_id=user_id).count()
+#     if followers > 0:
 
 
 
