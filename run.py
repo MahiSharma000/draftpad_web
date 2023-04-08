@@ -5,12 +5,12 @@ from decouple import config
 
 from apps.config import config_dict
 from apps import create_app, db
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import messaging
+#import firebase_admin
+#from firebase_admin import credentials
+#from firebase_admin import messaging
 
-cred = credentials.Certificate(r"C:\Users\ortha\Videos\secret.json")
-firebase_admin.initialize_app(cred)
+#cred = credentials.Certificate(r"C:\Users\ortha\Videos\secret.json")
+#firebase_admin.initialize_app(cred)
 print("Initialized Cloud messaging")
 DEBUG = config('DEBUG', default=True, cast=bool)
 

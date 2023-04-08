@@ -261,7 +261,7 @@ def addcAT():
             return render_template(msg='Category already exists')
 
         # create category
-        category = Category(**request.form)
+        category = Category( name=request.form['category'])
         db.session.add(category)
         db.session.commit()     
         return redirect('/admin/categories')

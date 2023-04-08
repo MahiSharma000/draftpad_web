@@ -38,6 +38,8 @@ class Users(db.Model, UserMixin):
     def get_last_seen(self):
         # show the last seen time in a human readable format
         return self.last_seen.strftime('%Y-%m-%d %H:%M:%S')
+    
+
 
     def __repr__(self):
         return str(self.username)
@@ -125,8 +127,8 @@ class Profile(db.Model):
         if self.profile_pic.startswith('http'):
             return self.profile_pic
         else:
-            bytes = base64.b64decode(self.profile_pic)
-            return bytes
+            # concatinate image path with static folder
+            return "data:image/png;base64," + self.profile_pic
     
     def __repr__(self):
         return str(self.first_name)
