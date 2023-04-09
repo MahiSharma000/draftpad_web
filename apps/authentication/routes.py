@@ -193,7 +193,7 @@ def api_profile(user_id):
             'username': user.username,
             'is_premium': profile.is_premium,
             'book_read': profile.book_read,
-            'dob': profile.dob,
+            'dob': profile.dob.date().strftime('%d-%m-%Y'),
             'phone': profile.phone
         })
         return jsonify({'status': 'OK', 'profile': profile_data})
@@ -343,7 +343,7 @@ def api_author_profile(user_id):
                 'following': profile.following,
                 'is_premium': profile.is_premium,
                 'books_read': profile.books_read,
-                'dob': profile.dob.date(),
+                'dob': profile.dob.date().strftime('%Y-%m-%d'),
                 'phone': profile.phone,
                 'created_at': profile.created_at,
                 'updated_at': profile.updated_at,
