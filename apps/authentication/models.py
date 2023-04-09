@@ -187,6 +187,15 @@ class Book(db.Model):
         self.views += 1
         db.session.commit()
 
+    def get_cover(self):
+        import base64
+        # if image is link
+        if self.cover.startswith('http'):
+            return self.cover
+        else:
+            # concatinate image path with static folder
+            return "data:image/png;base64," + self.cover
+
     def update_status(self, status_value):
         self.status = self.status_info[status_value]
         db.session.commit()
