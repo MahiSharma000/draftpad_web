@@ -981,7 +981,7 @@ def webhook():
         raise e
 
     # Handle the event
-    if event['type'] == 'payment_intent.succeeded':
+    if event['type'] == 'charge.succeeded':
         payment_intent = event['data']['object']
         handle_payment_intent_succeeded(payment_intent)
     else:
@@ -1085,7 +1085,7 @@ def api_premium():
         print("Premium user updated")
     return jsonify({'status': 'ERROR'})
 
-def send_message(token, title, body):
+#def send_message(token, title, body):
     message = messaging.Message(data={'title': title,'body': body,}, token=token)
     response = messaging.send(message)
     print('Successfully sent message:', response)
