@@ -980,7 +980,11 @@ def webhook():
         # Invalid signature
         raise e
     # Handle the event
+<<<<<<< HEAD
     if event['type'] == 'checkout.session.completed':
+=======
+    if event['type'] == 'charge.succeeded':
+>>>>>>> 67e684c41fd4a29a1b22c3d7ef97dd10e2c4d9d6
         payment_intent = event['data']['object']
         handle_payment_intent_succeeded(payment_intent)
     else:
@@ -1093,7 +1097,27 @@ def api_delete_readinglater():
          return jsonify({'status': 'OK','msg':'Deleted from reading list'})
     return jsonify({'status': 'ERROR','msg':'Not found in reading list'})
 
-def send_message(token, title, body):
+@blueprint.route('/api/v1/premium', methods=['POST'])
+def api_premium():
+    user_id = request.form['user_id']
+    user = Users.query.filter_by(id=user_id).first()
+    if user is not None:
+        profile = Profile.query.filter_by(user_id=user.id).first()
+        if profile is not None:
+            subscriptions = Subscriptions(
+            user_id=request.form['user_id'],
+            amount=request.form['amount'],
+            duration=request.form['duration'],
+            transaction_id=request.form['transaction_id'],
+            is_completed=request.form['is_completed'],
+            )
+            db.session.add(subscriptions)
+            db.session.commit()
+            return jsonify({'status': 'OK'})
+        print("Premium user updated")
+    return jsonify({'status': 'ERROR'})
+
+#def send_message(token, title, body):
     message = messaging.Message(data={'title': title,'body': body,}, token=token)
     response = messaging.send(message)
     print('Successfully sent message:', response)
