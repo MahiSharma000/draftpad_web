@@ -979,9 +979,8 @@ def webhook():
     except stripe.error.SignatureVerificationError as e:
         # Invalid signature
         raise e
-
     # Handle the event
-    if event['type'] == 'payment_intent.succeeded':
+    if event['type'] == 'checkout.session.completed':
         payment_intent = event['data']['object']
         handle_payment_intent_succeeded(payment_intent)
     else:
@@ -989,11 +988,25 @@ def webhook():
 
     return jsonify(success=True)
 
+def get_expiry_date(amount):
+    if amount == 9900:
+        # expire date 1 month from current date
+        return datetime.now() + timedelta(days=30)
+    elif amount == 39900:
+        # expire date 6 months from current date
+        return datetime.now() + timedelta(days=180)
+    elif amount == 99900:
+        # expire date 1 year from current date
+        return datetime.now() + timedelta(days=365)
+    else:
+        return datetime.now() + timedelta(days=7)
+    
 def handle_payment_intent_succeeded(payment_intent):
     print('PaymentIntent was successful!')
-    # get user name
+    print(payment_intent)
     email = payment_intent['customer_details']['email']
     amount = payment_intent['amount_total']
+    print(email, amount)
     user = Users.query.filter_by(email=email).first()
     if user is not None:
         profile = Profile.query.filter_by(user_id=user.id).first()
@@ -1001,16 +1014,31 @@ def handle_payment_intent_succeeded(payment_intent):
             profile.is_premium = 1
             db.session.commit()
             subscriptions = Subscriptions(
-            user_id=request.form['user_id'],
-            amount=request.form['amount'],
-            duration=request.form['duration'],
-            transaction_id=request.form['transaction_id'],
-            is_completed=request.form['is_completed'],
+            user_id=user.id,
+            amount=amount,
+            duration=get_expiry_date(amount),
+            transaction_id=payment_intent['id'],
+            is_complete=True,
             )
             db.session.add(subscriptions)
             db.session.commit()
             return jsonify({'status': 'OK'})
         print("Premium user updated")
+
+@blueprint.route('/api/v1/check/preium/<int:id>', methods=['GET'])
+def api_check_premium(id):
+    user = Users.query.filter_by(id=id).first()
+    if user is not None:
+        subscriptions = Subscriptions.query.filter_by(user_id=user.id).first()
+        profile = Profile.query.filter_by(user_id=user.id).first()
+        if profile is not None and subscriptions is not None:
+            subdate = datetime.strptime(subscriptions.duration, '%Y-%m-%d %H:%M:%S.%f')
+            if profile.is_premium == 1 and subdate > datetime.now():
+                    return jsonify({'status': 'OK', 'is_premium': True})
+            else:
+                profile.is_premium = 0
+                db.session.commit()
+    return jsonify({'status': 'ERROR', 'is_premium': False})
 
 #get downloaded books
 @blueprint.route('/api/v1/get_favourite/<int:user_id>', methods=['GET'])
