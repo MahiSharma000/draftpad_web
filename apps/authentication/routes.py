@@ -29,9 +29,6 @@ endpoint_secret = 'whsec_f09872bc8f5443c27fb4ed547cdaa5b2c5ac6cd8bd1204cddd603f3
 def route_default():
     return redirect(url_for('authentication_blueprint.login'))
 
-
-# Login & Registration
-
 @blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     login_form = LoginForm(request.form)
@@ -88,7 +85,23 @@ def register():
 
         # else we can create the user
         user = Users(**request.form)
+        profile = Profile(
+            user_id=user.id,
+            name=user.username,
+            first_name = "user",
+            last_name = "",
+            about = "",
+            profile_pic = "",
+            book_written = 0,
+            followers = 0,
+            following = 0,
+            is_premium = False,
+            book_read = 0,
+            dob= "01-01-2000",
+            phone = "0000000000",
+            )
         db.session.add(user)
+        db.session.add(profile)
         db.session.commit()
 
         return render_template('accounts/register.html',
@@ -327,7 +340,6 @@ def api_author_profile(user_id):
         for profile in profile:
             user = Users.query.filter_by(id=profile.user_id).first()
             book_count = Book.query.filter_by(user_id=profile.user_id).count()
-            #count total followers
             profile.followers = Follower.query.filter_by(follower_id=profile.user_id).count()
             profile.book_written = book_count
             profile_data.append({
@@ -343,7 +355,7 @@ def api_author_profile(user_id):
                 'following': profile.following,
                 'is_premium': profile.is_premium,
                 'books_read': profile.books_read,
-                'dob': profile.dob.date().strftime('%Y-%m-%d'),
+                'dob': profile.dob.date().strftime('%d-%m-%Y'),
                 'phone': profile.phone,
                 'created_at': profile.created_at,
                 'updated_at': profile.updated_at,
@@ -628,12 +640,10 @@ def api_get_books(name):
     return jsonify({'status': 'ERROR', 'books': []})
 
 
-# add a stripe payment endpoint
 @blueprint.route('/api/v1/create-checkout-session', methods=['POST'])
 def create_checkout_session():
     stripe.api_key = 'sk_test_51MqsCESCz8rZMjh8Kwew9NTEiBpxHqEQ9xaqITnSYty7NIsPT831jc46picJ7vjMrqjD0cjy9IPqJikqOVi6i46e00Ko8jRijT '
 
-    # Use an existing Customer ID if this is a returning customer
     customer = stripe.Customer.create()
     ephemeralKey = stripe.EphemeralKey.create(
         customer=customer['id'],
@@ -652,22 +662,7 @@ def create_checkout_session():
                     customer=customer.id,
                     publishableKey='pk_test_51MqsCESCz8rZMjh8kM2ElCXyKd8L4HIE3zhVAASQELg8ZLwVYpserzPdxOt5YHAy4FBp33TBH5rMgGKX42m0mcQE004Buf8yVW')
 
-#change password 
-@blueprint.route('/api/v1/change_password', methods=['POST'])
-def api_change_password():
-    user_id = request.form.get('user_id')
-    data = request.get_json()
-    user = Users.query.filter_by(id=user_id).first()
-    old_password = request.form.get('old_password')
-    if user is not None:
-        if (old_password==user.password):
-            user.password = request.form.get('new_password')
-            db.session.commit()
-            return jsonify({'status': 'OK', 'message': 'Password changed successfully'})
-        return jsonify({'status': 'ERROR', 'message': 'Old password is incorrect'})
-    return jsonify({'status': 'ERROR', 'message': 'User not found'})
 
-#get books with max views whose status is published
 @blueprint.route('/api/v1/get_books_max_views', methods=['GET'])
 def api_get_books_with_max_views():
     books = Book.query.filter_by(status=1).limit(10).all()
@@ -695,7 +690,6 @@ def api_get_books_with_max_views():
         return jsonify({'status': 'OK', 'books': book_data})
     return jsonify({'status': 'ERROR', 'books': []})
 
-#post report
 @blueprint.route('/api/v1/report', methods=['POST'])
 def api_report():
     report = Report(
@@ -708,7 +702,6 @@ def api_report():
     db.session.commit()
     return jsonify({'status': 'OK', 'message': 'Reported successfully'})
 
-#update  number of comments in chapter table 
 @blueprint.route('/api/v1/update_comment', methods=['POST'])
 def api_update_comment():
     chapter_id = request.form['id']
@@ -719,7 +712,6 @@ def api_update_comment():
         return jsonify({'status': 'OK'})
     return jsonify({'status': 'ERROR'})
 
-#check the user has liked the chapter
 @blueprint.route('/api/v1/check_like', methods=['POST'])
 def api_check_like():
     chapter_id = request.form['chapter_id']
@@ -728,10 +720,8 @@ def api_check_like():
     if like is not None:
         db.session.commit()
         return jsonify({'status': 'OK'})
-    
     return jsonify({'status': 'ERROR'})
 
-#add likes to chapter if user has not liked the chapter
 @blueprint.route('/api/v1/add_like', methods=['POST'])
 def api_add_like():
     chapter_id = request.form['chapter_id']
@@ -749,7 +739,6 @@ def api_add_like():
         return jsonify({'status': 'OK'})
     return jsonify({'status': 'ERROR'})
 
-#delete like from chapter
 @blueprint.route('/api/v1/delete_like', methods=['POST'])
 def api_delete_like():
     chapter_id = request.form['chapter_id']
@@ -761,7 +750,6 @@ def api_delete_like():
         return jsonify({'status': 'OK'})
     return jsonify({'status': 'ERROR'})
 
-#update status of book by id
 @blueprint.route('/api/v1/update_status', methods=['POST'])
 def api_update_status():
     book_id = request.form['id']
@@ -772,7 +760,6 @@ def api_update_status():
         return jsonify({'status': 'OK'})
     return jsonify({'status': 'ERROR'})
 
-#get category by id
 @blueprint.route('/api/v1/get_category/<int:category_id>', methods=['GET'])
 def api_get_category(category_id):
     category = Category.query.filter_by(id=category_id).first()
@@ -780,7 +767,6 @@ def api_get_category(category_id):
         return jsonify({'status': 'OK', 'category': category.name})
     return jsonify({'status': 'ERROR', 'category': ''})
 
-#update number of views in book table
 @blueprint.route('/api/v1/update_views', methods=['POST'])
 def api_update_views():
     book_id = request.form['id']
@@ -791,15 +777,12 @@ def api_update_views():
         return jsonify({'status': 'OK'})
     return jsonify({'status': 'ERROR'})
 
-#get followers of author
 @blueprint.route('/api/v1/get_followers/<int:user_id>', methods=['GET'])
 def api_get_followers(user_id):
-    #get followers of author
     followers = Follower.query.filter_by(follower_id=user_id).all()
     if followers is not None:
         follower_data = []
         for follower in followers:
-            #get data of follower
             user = Users.query.filter_by(id=follower.user_id).first()
             profile = Profile.query.filter_by(user_id=follower.user_id).first()
             follower_data.append({
@@ -824,7 +807,6 @@ def api_get_followers(user_id):
         return jsonify({'status': 'OK', 'followers': follower_data})
     return jsonify({'status': 'ERROR', 'followers': []})
 
-#add book in reading list if it is not already added
 @blueprint.route('/api/v1/add_reading_later', methods=['POST'])
 def api_add_reading_list():
     book_id = request.form['book_id']
@@ -842,7 +824,6 @@ def api_add_reading_list():
         return jsonify({'status': 'ERROR', 'msg': 'Already added to Read Later'})
 
 
-#check the user is following the author
 @blueprint.route('/api/v1/check_follow', methods=['POST'])
 def api_check_follow():
     user_id = request.form['user_id']
@@ -853,7 +834,6 @@ def api_check_follow():
         return jsonify({'status': 'OK'})
     return jsonify({'status': 'ERROR'})
 
-#get books from reading list
 @blueprint.route('/api/v1/get_reading_list/<int:user_id>', methods=['GET'])
 def api_get_reading_list(user_id):
     reading_list = ReadingList.query.filter_by(user_id=user_id).all()
@@ -881,7 +861,6 @@ def api_get_reading_list(user_id):
         return jsonify({'status': 'OK', 'readLater': reading_list_data})
     return jsonify({'status': 'ERROR', 'readLater': []})
 
-#unfollow author
 @blueprint.route('/api/v1/unfollow', methods=['POST'])
 def api_unfollow():
     user_id = request.form['user_id']
@@ -913,7 +892,6 @@ def api_delete_book():
         return jsonify({'status': 'OK'})
     return jsonify({'status': 'ERROR'})
 
-#block author
 @blueprint.route('/api/v1/block', methods=['POST'])
 def api_block_author():
     user_id = request.form['user_id']
@@ -932,7 +910,6 @@ def api_block_author():
         db.session.commit()
         return jsonify({'status': 'OK'})
 
-#get blocked authors
 @blueprint.route('/api/v1/get_blocked/<int:user_id>', methods=['GET'])
 def api_get_blocked_authors(user_id):
     blocked_authors = BlockedUser.query.filter_by(user_id=user_id).all()
@@ -980,11 +957,8 @@ def webhook():
         # Invalid signature
         raise e
     # Handle the event
-<<<<<<< HEAD
-    if event['type'] == 'checkout.session.completed':
-=======
     if event['type'] == 'charge.succeeded':
->>>>>>> 67e684c41fd4a29a1b22c3d7ef97dd10e2c4d9d6
+
         payment_intent = event['data']['object']
         handle_payment_intent_succeeded(payment_intent)
     else:
@@ -1117,16 +1091,33 @@ def api_premium():
         print("Premium user updated")
     return jsonify({'status': 'ERROR'})
 
-#def send_message(token, title, body):
-    message = messaging.Message(data={'title': title,'body': body,}, token=token)
-    response = messaging.send(message)
-    print('Successfully sent message:', response)
+#get books by userid
+@blueprint.route('/api/v1/get_books_by_user/<int:id>', methods=['GET'])
+def api_get_books_by_user(id):
+    books = Book.query.filter_by(user_id=id).all()
+    if books is not None:
+        books_data = []
+        for book in books:
+            user = Users.query.filter_by(id=book.user_id).first()
+            chapter_count = Chapter.query.filter_by(book_id=book.id).count()
+            books_data.append({
+                'id': book.id,
+                'cover': book.cover,
+                'title': book.title,
+                'user_id': book.user_id,
+                'username': user.username,
+                'status' :book.status,
+                'category_id': book.category_id,
+                'description': book.description,
+                'created_at': book.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_at': book.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'lang': book.lang,
+                'views': book.views,
+                'chapters': chapter_count
+            })
+        return jsonify({'status': 'OK', 'books': books_data})
+    return jsonify({'status': 'ERROR', 'books': []})
 
-# @blueprint.route('/api/v1/check/follower/<int:user_id>', methods=['GET'])
-# def check_if_you_got_any_follower(user_id):
-#     # count user_id exists as follower_id in Followers table
-#     followers = Follower.query.filter_by(follower_id=user_id).count()
-#     if followers > 0:
 
 
 
