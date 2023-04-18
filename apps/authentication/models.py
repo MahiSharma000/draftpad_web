@@ -300,7 +300,7 @@ class Comment(db.Model):
         return str(self.content)
 
 class Download(db.Model):
-    __tablename__ = 'Downloads'
+    __tablename__ = 'Favourites'
     id = db.Column(db.Integer, primary_key=True)
     book_id = db.Column(db.Integer, db.ForeignKey('Books.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
