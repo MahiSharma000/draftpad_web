@@ -980,11 +980,7 @@ def webhook():
         # Invalid signature
         raise e
     # Handle the event
-<<<<<<< HEAD
-    if event['type'] == 'checkout.session.completed':
-=======
     if event['type'] == 'charge.succeeded':
->>>>>>> 67e684c41fd4a29a1b22c3d7ef97dd10e2c4d9d6
         payment_intent = event['data']['object']
         handle_payment_intent_succeeded(payment_intent)
     else:
