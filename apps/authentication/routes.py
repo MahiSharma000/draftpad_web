@@ -958,7 +958,10 @@ def webhook():
         raise e
     # Handle the event
     if event['type'] == 'charge.succeeded':
+<<<<<<< HEAD
+=======
 
+>>>>>>> 7807f1c3169a18e9992bc297381248018f0e3da3
         payment_intent = event['data']['object']
         handle_payment_intent_succeeded(payment_intent)
     else:
