@@ -361,7 +361,6 @@ def api_author_profile(user_id):
                 'updated_at': profile.updated_at,
 
             })
-        print(profile_data)
         return jsonify({'status': 'OK', 'author': profile_data[0]})
     return jsonify({'status': 'ERROR', 'author': ''})
 
@@ -609,6 +608,7 @@ def api_get_profiles(name):
                     'created_at': profile.created_at,
                     'updated_at': profile.updated_at,
                 })
+        profile_data = sorted(profile_data, key=lambda k: k['followers'], reverse=True)
         return jsonify({'status': 'OK', 'profiles': profile_data})
     return jsonify({'status': 'ERROR', 'profiles': []})
 
@@ -636,6 +636,7 @@ def api_get_books(name):
                 'views': book.views,
                 'chapters': chapter_count
             })
+        book_data = sorted(book_data, key=lambda k: k['views'], reverse=True)
         return jsonify({'status': 'OK', 'books': book_data})
     return jsonify({'status': 'ERROR', 'books': []})
 
@@ -1000,7 +1001,6 @@ def handle_payment_intent_succeeded(payment_intent):
             db.session.add(subscriptions)
             db.session.commit()
             return jsonify({'status': 'OK'})
-        print("Premium user updated")
 
 @blueprint.route('/api/v1/check/preium/<int:id>', methods=['GET'])
 def api_check_premium(id):
@@ -1087,7 +1087,6 @@ def api_premium():
             db.session.add(subscriptions)
             db.session.commit()
             return jsonify({'status': 'OK'})
-        print("Premium user updated")
     return jsonify({'status': 'ERROR'})
 
 #get books by userid
