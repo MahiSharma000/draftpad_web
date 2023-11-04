@@ -22,7 +22,7 @@
               <div class="d-sm-flex justify-content-between align-items-start">
                 <div>
                   <h4 class="card-title card-title-dash">Reported Users</h4>
-                  <p class="card-subtitle card-subtitle-dash">You have {{users|length}} registered users</p>
+                  <p class="card-subtitle card-subtitle-dash">You have {{Report|length}} registered users</p>
                 </div>
                 <div>
                   <!-- <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-account-plus"></i>Add new member</button> -->
@@ -88,8 +88,7 @@
                       </td>
                       <td>
                         <div class="d-flex">
-                          <button class="btn btn-primary btn-sm text-white mb-0 me-0" type="button"><i class="mdi mdi-account-plus"></i>View</button>
-                          <button class="btn btn-danger btn-sm text-white mb-0 me-0" type="button"><i class="mdi mdi-account-plus"></i>Delete</button>
+                          <a href="/report/{{report.id}}/action/delete" class="btn btn-primary btn-sm text-white me-1">Delete</a>
                         </div>
                       </td>
                     </tr>
