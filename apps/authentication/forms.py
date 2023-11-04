@@ -48,3 +48,5 @@ class AddCategoryForm(FlaskForm):
                          id='category_create',
                          validators=[DataRequired()])
     
+
+    

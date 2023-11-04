@@ -87,7 +87,6 @@ def register():
         user = Users(**request.form)
         profile = Profile(
             user_id=user.id,
-            name=user.username,
             first_name = "user",
             last_name = "",
             about = "",
@@ -96,7 +95,7 @@ def register():
             followers = 0,
             following = 0,
             is_premium = False,
-            book_read = 0,
+            books_read = 0,
             dob= "01-01-2000",
             phone = "0000000000",
             )
